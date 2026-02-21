@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/LibraryMS
+    username: root
+    password: facebook.com
+  jpa:
+    show-sql: true
