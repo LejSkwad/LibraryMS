@@ -1,5 +1,5 @@
 package org.example.libraryms.Entity;
 
 public enum Role {
-    ADMIN, LIBRARIAN, MEMBER
+    ADMIN, LIBRARIAN, BORROWER
 }

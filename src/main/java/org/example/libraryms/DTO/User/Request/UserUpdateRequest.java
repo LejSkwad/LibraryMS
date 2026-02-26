@@ -1,4 +1,4 @@
-package org.example.libraryms.DTO.Borrower.Request;
+package org.example.libraryms.DTO.User.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BorrowerCreateRequest {
-    @NotBlank
-    private String socialNumber;
-
+public class UserUpdateRequest {
     @NotBlank
     private String firstName;
 
@@ -19,11 +16,15 @@ public class BorrowerCreateRequest {
     private String lastName;
 
     @NotBlank
-    private String email;
-
-    @NotBlank
     private String phone;
 
     @NotBlank
+    private String role;
+
+    private String email;
+
     private String address;
+
+    @NotBlank
+    private String socialNumber;
 }

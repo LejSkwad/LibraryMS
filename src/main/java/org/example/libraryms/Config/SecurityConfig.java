@@ -40,4 +40,9 @@ public class SecurityConfig {
             registerCorsConfiguration("/**", configuration);
         }};
     }
+
+    //@Bean
+    //public PasswordEncoder passwordEncoder() {
+        //return new BCryptPasswordEncoder();
+    //}
 }

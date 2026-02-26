@@ -11,9 +11,9 @@ public class TransactionSpecification {
         return ((root, query, builder) -> {
             return builder.or(
                     builder.like(builder.lower(root.get("book").get("title")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("borrower").get("firstName")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("borrower").get("lastName")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("borrower").get("socialNumber")), "%" + keyword.toLowerCase() + "%")
+                    builder.like(builder.lower(root.get("user").get("firstName")), "%" + keyword.toLowerCase() + "%"),
+                    builder.like(builder.lower(root.get("user").get("lastName")), "%" + keyword.toLowerCase() + "%"),
+                    builder.like(builder.lower(root.get("user").get("socialNumber")), "%" + keyword.toLowerCase() + "%")
             );
         });
     }
