@@ -15,8 +15,7 @@ public class UserSpecification {
                     builder.like(builder.lower(root.get("lastName")), "%" + keyword.toLowerCase() + "%"),
                     builder.like(builder.lower(root.get("phone")), "%" + keyword.toLowerCase() + "%"),
                     builder.like(builder.lower(root.get("address")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("socialNumber")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("email")), "%" + keyword.toLowerCase() + "%")
+                    builder.like(builder.lower(root.get("socialNumber")), "%" + keyword.toLowerCase() + "%")
             );
         });
     }

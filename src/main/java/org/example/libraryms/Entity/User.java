@@ -19,6 +19,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "social_number")
+    private String socialNumber;
+
     @Column(name = "password")
     private String password;
 
@@ -32,14 +35,8 @@ public class User {
     @Column(name = "role")
     private Role role;
 
-    @Column(name = "social_number")
-    private String socialNumber;
-
     @Column(name = "phone")
     private String phone;
-
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "address")
     private String address;

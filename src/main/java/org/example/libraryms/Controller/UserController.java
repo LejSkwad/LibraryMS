@@ -33,9 +33,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Tao User thanh cong"));
     }
 
-    //@PutMapping("/v1/users")
-    //public ResponseEntity<BaseResponse<Void>> update(@Valid @RequestBody UserUpdateRequest userUpdateRequest){
-        //userService.update(userUpdateRequest);
-        //return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cap nhat User thanh cong"));
-    //}
+    @PutMapping("/v1/users/{id}")
+    public ResponseEntity<BaseResponse<Void>> update(@PathVariable Integer id, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
+        userService.update(id, userUpdateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cap nhat User thanh cong"));
+    }
+
+    @DeleteMapping("/v1/users/{id}")
+    public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer id){
+        userService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Xoa User thanh cong"));
+    }
 }

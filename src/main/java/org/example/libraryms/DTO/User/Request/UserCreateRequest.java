@@ -25,8 +25,6 @@ public class UserCreateRequest {
     @NotBlank
     private String role;
 
-    private String email;
-
     private String address;
 
     @NotBlank

@@ -3,7 +3,9 @@ package org.example.libraryms.Service.Impl;
 import jakarta.transaction.Transactional;
 import org.example.libraryms.DTO.User.Request.UserCreateRequest;
 import org.example.libraryms.DTO.User.Request.UserSearchRequest;
+import org.example.libraryms.DTO.User.Request.UserUpdateRequest;
 import org.example.libraryms.DTO.User.Response.UserSearchResponse;
+import org.example.libraryms.Entity.Role;
 import org.example.libraryms.Entity.TransactionStatus;
 import org.example.libraryms.Entity.User;
 import org.example.libraryms.Exception.BussinessException;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,5 +73,26 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(userCreateRequest.getPassword());
 
         userRepository.save(newUser);
+    }
+
+    @Override
+    @Transactional
+    public void update(Integer id, UserUpdateRequest userUpdateRequest) {
+        User existedUser = userRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("User not found"));
+
+        userMapper.fromUpdate(userUpdateRequest, existedUser);
+        userRepository.save(existedUser);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("User not found"));
+        if (user.getRole() == Role.BORROWER && !user.getTransactions().isEmpty()) {
+            throw new BussinessException("Cannot delete borrower account with transactions history");
+        }
+        userRepository.delete(user);
     }
 }

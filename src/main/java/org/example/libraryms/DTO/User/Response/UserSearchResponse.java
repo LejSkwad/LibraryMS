@@ -13,7 +13,6 @@ public class UserSearchResponse {
     private String fullName;
     private String role;
     private String phone;
-    private String email;
     private String address;
     private String registrationDate;
     private Integer borrowingCount;

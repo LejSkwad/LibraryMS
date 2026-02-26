@@ -10,21 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserUpdateRequest {
     @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
-
-    @NotBlank
     private String phone;
 
     @NotBlank
-    private String role;
-
-    private String email;
-
     private String address;
-
-    @NotBlank
-    private String socialNumber;
 }
