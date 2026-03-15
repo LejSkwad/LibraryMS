@@ -44,8 +44,23 @@ public class BookServiceImpl implements BookService {
         if (bookSearchRequest.getCategoryId() != null) {
             spec = spec.and(BookSpecification.categoryEqual(bookSearchRequest.getCategoryId()));
         }
-        if(bookSearchRequest.getKeyword() != null){
+        if (bookSearchRequest.getKeyword() != null) {
             spec = spec.and(BookSpecification.globalSearch(bookSearchRequest.getKeyword()));
+        }
+        if (bookSearchRequest.getId() != null) {
+            spec = spec.and(BookSpecification.idEqual(bookSearchRequest.getId()));
+        }
+        if (bookSearchRequest.getTitle() != null && !bookSearchRequest.getTitle().isBlank()) {
+            spec = spec.and(BookSpecification.titleContains(bookSearchRequest.getTitle()));
+        }
+        if (bookSearchRequest.getAuthor() != null && !bookSearchRequest.getAuthor().isBlank()) {
+            spec = spec.and(BookSpecification.authorContains(bookSearchRequest.getAuthor()));
+        }
+        if (bookSearchRequest.getPublisher() != null && !bookSearchRequest.getPublisher().isBlank()) {
+            spec = spec.and(BookSpecification.publisherContains(bookSearchRequest.getPublisher()));
+        }
+        if (bookSearchRequest.getPublishedYear() != null) {
+            spec = spec.and(BookSpecification.publishedYearEqual(bookSearchRequest.getPublishedYear()));
         }
         Page<Book> bookPage = bookRepository.findAll(spec, pageable);
 

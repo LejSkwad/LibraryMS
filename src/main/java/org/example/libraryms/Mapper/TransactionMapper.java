@@ -1,5 +1,6 @@
 package org.example.libraryms.Mapper;
 
+import org.example.libraryms.DTO.Transaction.Request.TransactionCreateRequest;
 import org.example.libraryms.DTO.Transaction.Response.TransactionItemsResponse;
 import org.example.libraryms.DTO.Transaction.Response.TransactionSearchResponse;
 import org.example.libraryms.Entity.Transaction;
@@ -19,4 +20,7 @@ public interface TransactionMapper {
     @Mapping(target = "publisher", source = "book.publisher")
     @Mapping(target = "publishedYear", source = "book.publishedYear")
     TransactionItemsResponse toItemResponse(TransactionItem transactionItem);
+
+
+    Transaction fromCreate (TransactionCreateRequest transactionCreateRequest);
 }

@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookSearchRequest {
+    private Integer id;
+    private String title;
+    private String author;
+    private String publisher;
+    private Integer publishedYear;
     private Integer categoryId;
     private String keyword;
 }

@@ -1,5 +1,8 @@
 package org.example.libraryms.DTO.Transaction.Request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,12 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionCreateRequest {
+    @NotEmpty
     private List<Integer> bookIds;
-    private Integer borrowerId;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @NotNull
+    private Integer userId;
+
+    @NotNull
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate borrowDate;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @NotNull
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dueDate;
 }

@@ -11,4 +11,6 @@ public class TransactionSearchRequest {
     private String keyword;
     private String socialNumber;
     private String status;
+
+
 }

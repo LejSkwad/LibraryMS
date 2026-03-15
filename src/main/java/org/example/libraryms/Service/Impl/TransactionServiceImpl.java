@@ -20,25 +20,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
-    private final TransactionItemRepository transactionItemRepository;
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   TransactionMapper transactionMapper,
                                   TransactionItemRepository transactionItemRepository,
-                                  BookRepository bookRepository) {
+                                  BookRepository bookRepository, UserRepository userRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
-        this.transactionItemRepository = transactionItemRepository;
         this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -69,13 +69,53 @@ public class TransactionServiceImpl implements TransactionService {
                 .map(transactionMapper::toItemResponse)
                 .collect(Collectors.toList());
 
-        System.out.println(responseItems);
         return responseItems;
     }
 
     @Override
     @Transactional
     public void create(TransactionCreateRequest transactionCreateRequest) {
+        User user = userRepository.findById(transactionCreateRequest.getUserId())
+                .orElseThrow(() -> new BussinessException("Cannot find user"));
+        List<Book> bookList = bookRepository.findByIdIn(transactionCreateRequest.getBookIds());
+        Set<Integer> foundIds = bookList.stream().map(Book::getId).collect(Collectors.toSet());
+        List<Integer> missingIds = transactionCreateRequest.getBookIds()
+                .stream()
+                .filter(id -> !foundIds.contains(id))
+                .toList();
+
+        if (!missingIds.isEmpty()) {
+            throw new BussinessException("Cannot find books" + missingIds);
+        }
+
+        List<String> outOfStock = bookList.stream()
+                .filter(b -> b.getAvailableQuantity() <= 0)
+                .map(Book::getTitle)
+                .toList();
+
+        if (!outOfStock.isEmpty()) {
+            throw new BussinessException("Books out of stock: " + outOfStock);
+        }
+
+        Transaction transaction = transactionMapper.fromCreate(transactionCreateRequest);
+        transaction.setUser(user);
+        transaction.setSocialNumber(user.getSocialNumber());
+        transaction.setStatus(TransactionStatus.BORROWED);
+
+        List<TransactionItem> transactionItems = bookList.stream()
+                        .map(book -> {
+                            TransactionItem item = new TransactionItem();
+                            item.setBook(book);
+                            item.setTransaction(transaction);
+                            return item;
+                        }).toList();
+
+        transaction.setItems(transactionItems);
+
+        transactionRepository.save(transaction);
+
+        bookList.forEach(book ->  book.setAvailableQuantity(book.getAvailableQuantity() - 1));
+        bookRepository.saveAll(bookList);
 
     }
 }
