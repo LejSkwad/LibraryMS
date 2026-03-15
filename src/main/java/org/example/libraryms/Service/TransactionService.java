@@ -13,4 +13,6 @@ public interface TransactionService {
     Page<TransactionSearchResponse> search(TransactionSearchRequest transactionSearchRequest, Pageable pageable);
     List<TransactionItemsResponse> getItems(Integer id);
     void create(TransactionCreateRequest transactionCreateRequest);
+    void bookReturn(Integer id);
+    void delete(Integer id);
 }

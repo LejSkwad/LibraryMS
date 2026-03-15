@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,6 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
     public void create(TransactionCreateRequest transactionCreateRequest) {
         User user = userRepository.findById(transactionCreateRequest.getUserId())
                 .orElseThrow(() -> new BussinessException("Cannot find user"));
+
         List<Book> bookList = bookRepository.findByIdIn(transactionCreateRequest.getBookIds());
         Set<Integer> foundIds = bookList.stream().map(Book::getId).collect(Collectors.toSet());
         List<Integer> missingIds = transactionCreateRequest.getBookIds()
@@ -116,6 +118,29 @@ public class TransactionServiceImpl implements TransactionService {
 
         bookList.forEach(book ->  book.setAvailableQuantity(book.getAvailableQuantity() - 1));
         bookRepository.saveAll(bookList);
+    }
 
+    @Override
+    @Transactional
+    public void bookReturn(Integer id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+
+        transaction.setReturnDate(LocalDate.now());
+        transaction.setStatus(TransactionStatus.RETURNED);
+
+        List<TransactionItem> items = transaction.getItems();
+        List<Book> books = items.stream().map(TransactionItem::getBook).toList();
+
+        books.forEach(book -> book.setAvailableQuantity(book.getAvailableQuantity() + 1));
+        bookRepository.saveAll(books);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+        transactionRepository.delete(transaction);
     }
 }

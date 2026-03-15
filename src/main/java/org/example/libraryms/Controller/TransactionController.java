@@ -41,4 +41,18 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "tao transaction thanh cong"));
     }
 
+    @PutMapping("/v1/transactions/return-books/{id}")
+    public ResponseEntity<BaseResponse<Void>> bookReturn(@PathVariable Integer id){
+        transactionService.bookReturn(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "tra sach thanh cong"));
+    }
+
+    @DeleteMapping("/v1/transactions/{id}")
+    public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer id){
+        transactionService.delete(id);
+       return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "xoa transaction thanh cong"));
+    }
+
+
+
 }
