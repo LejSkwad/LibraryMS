@@ -35,17 +35,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserSearchResponse> search(UserSearchRequest userSearchRequest, Pageable pageable) {
-        Specification<User> spec = null;
+        Specification<User> spec = (root, query, builder) -> builder.conjunction();
         if (userSearchRequest.getKeyword() != null) {
-            spec = UserSpecification.globalSearch(userSearchRequest.getKeyword());
+            spec = spec.and(UserSpecification.globalSearch(userSearchRequest.getKeyword()));
         }
         if(userSearchRequest.getRole() != null) {
-            spec = spec == null ? UserSpecification.roleEqual(userSearchRequest.getRole())
-                    : spec.and(UserSpecification.roleEqual(userSearchRequest.getRole()));
+            spec = spec.and(UserSpecification.roleEqual(userSearchRequest.getRole()));
         }
         if(userSearchRequest.getCreateDateFrom() != null || userSearchRequest.getCreateDateTo() != null) {
-            spec = spec == null ? UserSpecification.registrationDateBetween(userSearchRequest.getCreateDateFrom(), userSearchRequest.getCreateDateTo())
-                    : spec.and(UserSpecification.registrationDateBetween(userSearchRequest.getCreateDateFrom(), userSearchRequest.getCreateDateTo()));
+            spec = spec.and(UserSpecification.registrationDateBetween(userSearchRequest.getCreateDateFrom(), userSearchRequest.getCreateDateTo()));
         }
 
         Page<User> userPage = userRepository.findAll(spec, pageable);

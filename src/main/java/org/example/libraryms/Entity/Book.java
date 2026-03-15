@@ -41,5 +41,5 @@ public class Book {
     private Integer availableQuantity;
 
     @OneToMany(mappedBy = "book")
-    private List<Transaction> transactions;
+    private List<TransactionItem> transactionItems;
 }

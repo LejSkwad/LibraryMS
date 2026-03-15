@@ -40,13 +40,12 @@ public class BookServiceImpl implements BookService {
                     .orElseThrow(() -> new BussinessException("category not found"));
         }
 
-        Specification<Book> spec = null;
+        Specification<Book> spec = (root, query, builder) -> builder.conjunction();
         if (bookSearchRequest.getCategoryId() != null) {
-            spec = BookSpecification.categoryEqual(bookSearchRequest.getCategoryId());
+            spec = spec.and(BookSpecification.categoryEqual(bookSearchRequest.getCategoryId()));
         }
         if(bookSearchRequest.getKeyword() != null){
-            spec = spec == null ? BookSpecification.globalSearch(bookSearchRequest.getKeyword())
-                    : spec.and(BookSpecification.globalSearch(bookSearchRequest.getKeyword()));
+            spec = spec.and(BookSpecification.globalSearch(bookSearchRequest.getKeyword()));
         }
         Page<Book> bookPage = bookRepository.findAll(spec, pageable);
 

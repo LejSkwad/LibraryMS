@@ -10,11 +10,15 @@ public class TransactionSpecification {
     public static Specification<Transaction> globalSearch(String keyword){
         return ((root, query, builder) -> {
             return builder.or(
-                    builder.like(builder.lower(root.get("book").get("title")), "%" + keyword.toLowerCase() + "%"),
                     builder.like(builder.lower(root.get("user").get("firstName")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("user").get("lastName")), "%" + keyword.toLowerCase() + "%"),
-                    builder.like(builder.lower(root.get("user").get("socialNumber")), "%" + keyword.toLowerCase() + "%")
+                    builder.like(builder.lower(root.get("user").get("lastName")), "%" + keyword.toLowerCase() + "%")
             );
+        });
+    }
+
+    public static Specification<Transaction> socialNumberLike(String socialNumber){
+        return ((root, query, builder) -> {
+            return builder.like(builder.lower(root.get("user").get("socialNumber")), "%" + socialNumber.toLowerCase() + "%");
         });
     }
 

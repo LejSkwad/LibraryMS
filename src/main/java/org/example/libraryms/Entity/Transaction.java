@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -18,12 +19,11 @@ public class Transaction {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
-    private Book book;
-
-    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "social_number")
+    private String socialNumber;
 
     @Column(name = "borrow_date")
     private LocalDate borrowDate;
@@ -33,6 +33,9 @@ public class Transaction {
 
     @Column(name = "return_date")
     private LocalDate returnDate;
+
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+    private List<TransactionItem> items;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
