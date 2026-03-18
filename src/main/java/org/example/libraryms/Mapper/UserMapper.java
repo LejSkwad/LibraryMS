@@ -1,6 +1,7 @@
 package org.example.libraryms.Mapper;
 
 
+import org.example.libraryms.DTO.Auth.Response.LoginResponse;
 import org.example.libraryms.DTO.User.Request.UserCreateRequest;
 import org.example.libraryms.DTO.User.Request.UserUpdateRequest;
 import org.example.libraryms.DTO.User.Response.UserSearchResponse;
@@ -18,4 +19,5 @@ public interface UserMapper {
 
     void fromUpdate(UserUpdateRequest userUpdateRequest, @MappingTarget User user);
 
+    LoginResponse toLoginResponse(User user);
 }

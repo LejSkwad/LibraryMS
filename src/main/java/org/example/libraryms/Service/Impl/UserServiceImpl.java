@@ -16,6 +16,8 @@ import org.example.libraryms.Specification.UserSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
@@ -35,6 +37,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserSearchResponse> search(UserSearchRequest userSearchRequest, Pageable pageable) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isLibrarian = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
+        if(isLibrarian) {
+            userSearchRequest.setRole(String.valueOf(Role.BORROWER));
+        }
         Specification<User> spec = (root, query, builder) -> builder.conjunction();
         if (userSearchRequest.getKeyword() != null) {
             spec = spec.and(UserSpecification.globalSearch(userSearchRequest.getKeyword()));
@@ -79,6 +87,14 @@ public class UserServiceImpl implements UserService {
         User existedUser = userRepository.findById(id)
                 .orElseThrow(() -> new BussinessException("User not found"));
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isLibrarian = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
+
+        String authSocialNumber = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(isLibrarian && existedUser.getRole() != Role.BORROWER && existedUser.getSocialNumber() != authSocialNumber) {
+            throw new BussinessException("Cannot update user that is not borrower or yourself");
+        }
         userMapper.fromUpdate(userUpdateRequest, existedUser);
         userRepository.save(existedUser);
     }
