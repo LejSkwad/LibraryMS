@@ -11,5 +11,4 @@ public interface BookService {
     Page<BookSearchResponse> search(BookSearchRequest bookSearchRequest, Pageable pageable);
     void create(BookCreateRequest bookCreateRequest);
     void update(Integer id, BookUpdateRequest bookUpdateRequest);
-    void delete(Integer id);
 }

@@ -38,11 +38,4 @@ public class BookController {
         bookService.update(id, bookUpdateRequest);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cap nhat sach thanh cong"));
     }
-
-    @DeleteMapping("/v1/books/{id}")
-    public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer id) {
-        bookService.delete(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Xoa sach thanh cong"));
-    }
-
 }

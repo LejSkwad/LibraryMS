@@ -3,6 +3,7 @@ package org.example.libraryms.Service.Impl;
 import jakarta.transaction.Transactional;
 import org.example.libraryms.DTO.Transaction.Request.TransactionCreateRequest;
 import org.example.libraryms.DTO.Transaction.Request.TransactionSearchRequest;
+import org.example.libraryms.DTO.Transaction.Request.TransactionUpdateRequest;
 import org.example.libraryms.DTO.Transaction.Response.TransactionItemsResponse;
 import org.example.libraryms.DTO.Transaction.Response.TransactionSearchResponse;
 import org.example.libraryms.Entity.*;
@@ -18,7 +19,7 @@ import org.example.libraryms.Specification.TransactionSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -137,7 +138,22 @@ public class TransactionServiceImpl implements TransactionService {
         bookRepository.saveAll(books);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    @Transactional
+    public void update(Integer id, TransactionUpdateRequest transactionUpdateRequest) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+
+        boolean isLibrarian = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
+
+        if(transaction.getStatus() == TransactionStatus.RETURNED && isLibrarian) {
+            throw new BussinessException("Khong the cap nhat phieu da hoan tra");
+        }
+        transactionMapper.fromUpdate(transactionUpdateRequest, transaction);
+        transactionRepository.save(transaction);
+    }
+
     @Override
     @Transactional
     public void delete(Integer id) {

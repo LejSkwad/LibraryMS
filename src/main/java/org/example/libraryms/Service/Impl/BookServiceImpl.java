@@ -100,17 +100,4 @@ public class BookServiceImpl implements BookService {
 
         bookRepository.save(existedBook);
     }
-
-    @Override
-    @Transactional
-    public void delete(Integer id) {
-        Book existedBook = bookRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("book not found"));
-
-        if(existedBook.getAvailableQuantity() < existedBook.getQuantity()){
-            throw new BussinessException("Book is still being borrowed, cannot delete");
-        }
-
-        bookRepository.delete(existedBook);
-    }
 }

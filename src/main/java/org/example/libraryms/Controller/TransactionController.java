@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.libraryms.Common.BaseResponse;
 import org.example.libraryms.DTO.Transaction.Request.TransactionCreateRequest;
 import org.example.libraryms.DTO.Transaction.Request.TransactionSearchRequest;
+import org.example.libraryms.DTO.Transaction.Request.TransactionUpdateRequest;
 import org.example.libraryms.DTO.Transaction.Response.TransactionItemsResponse;
 import org.example.libraryms.DTO.Transaction.Response.TransactionSearchResponse;
 import org.example.libraryms.Service.TransactionService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,12 +49,16 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "tra sach thanh cong"));
     }
 
+    @PutMapping("/v1/transactions/{id}")
+    public ResponseEntity<BaseResponse<Void>> update(@PathVariable Integer id, @Valid @RequestBody TransactionUpdateRequest transactionUpdateRequest){
+        transactionService.update(id, transactionUpdateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "cap nhat transaction thanh cong"));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/v1/transactions/{id}")
     public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer id){
         transactionService.delete(id);
        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "xoa transaction thanh cong"));
     }
-
-
-
 }
