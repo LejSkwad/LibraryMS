@@ -1,8 +1,10 @@
 package org.example.libraryms.Service;
 
+import org.example.libraryms.DTO.User.Request.ChangePasswordRequest;
 import org.example.libraryms.DTO.User.Request.UserCreateRequest;
 import org.example.libraryms.DTO.User.Request.UserSearchRequest;
 import org.example.libraryms.DTO.User.Request.UserUpdateRequest;
+import org.example.libraryms.DTO.User.Response.UserProfileResponse;
 import org.example.libraryms.DTO.User.Response.UserSearchResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,4 +14,6 @@ public interface UserService {
     void create(UserCreateRequest userCreateRequest);
     void update(Integer id, UserUpdateRequest userUpdateRequest);
     void delete(Integer id);
+    void changePassword(Integer id, ChangePasswordRequest changePasswordRequest);
+    UserProfileResponse getProfile(Integer id);
 }

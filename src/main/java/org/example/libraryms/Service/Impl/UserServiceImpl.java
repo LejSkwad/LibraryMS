@@ -1,9 +1,11 @@
 package org.example.libraryms.Service.Impl;
 
 import jakarta.transaction.Transactional;
+import org.example.libraryms.DTO.User.Request.ChangePasswordRequest;
 import org.example.libraryms.DTO.User.Request.UserCreateRequest;
 import org.example.libraryms.DTO.User.Request.UserSearchRequest;
 import org.example.libraryms.DTO.User.Request.UserUpdateRequest;
+import org.example.libraryms.DTO.User.Response.UserProfileResponse;
 import org.example.libraryms.DTO.User.Response.UserSearchResponse;
 import org.example.libraryms.Entity.Role;
 import org.example.libraryms.Entity.TransactionStatus;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -25,14 +28,15 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    //private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
-                           UserMapper userMapper
+                           UserMapper userMapper,
+                           PasswordEncoder passwordEncoder
                            ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        //this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -65,6 +69,14 @@ public class UserServiceImpl implements UserService {
         });
 
         return responsePage;
+    }
+
+    @Override
+    public UserProfileResponse getProfile(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("User not found"));
+        UserProfileResponse userProfileResponse = userMapper.toProfileResponse(user);
+        return userProfileResponse;
     }
 
     @Override
@@ -108,5 +120,26 @@ public class UserServiceImpl implements UserService {
             throw new BussinessException("Cannot delete borrower account with transactions history");
         }
         userRepository.delete(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Integer id, ChangePasswordRequest changePasswordRequest) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("User not found"));
+
+        String socialNumber = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!user.getSocialNumber().equals(socialNumber)) {
+            throw new BussinessException("Cannot change other people's password");
+        }
+
+        if(!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+            throw new BussinessException("Wrong password");
+        }
+        if(!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getNewPasswordConfirmation())) {
+            throw new BussinessException("new passwords do not match");
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(user);
     }
 }

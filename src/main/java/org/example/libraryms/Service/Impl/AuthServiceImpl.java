@@ -16,13 +16,11 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final UserMapper userMapper;
 
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, UserMapper userMapper) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
     }
 
     @Override
@@ -36,7 +34,9 @@ public class AuthServiceImpl implements AuthService {
         }
         String token = jwtUtil.generateToken(user.getSocialNumber(), user.getRole().name());
 
-        LoginResponse loginResponse = userMapper.toLoginResponse(user);
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setId(user.getId());
+        loginResponse.setRole(user.getRole().name());
         loginResponse.setToken(token);
         return loginResponse;
     }
