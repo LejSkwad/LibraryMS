@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/v1/users/change-password").hasAnyRole("ADMIN", "LIBRARIAN", "BORROWER")
                         .requestMatchers("/v1/users/**").hasAnyRole("ADMIN","LIBRARIAN","BORROWER")
                         .requestMatchers("/v1/books/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/category").permitAll()
+                        .requestMatchers("/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers("/v1/transactions/**").hasAnyRole("ADMIN","LIBRARIAN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -81,6 +81,11 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userRepository.findById(transactionCreateRequest.getUserId())
                 .orElseThrow(() -> new BussinessException("Cannot find user"));
 
+        if(user.getTransactions().stream().anyMatch(
+                t -> t.getStatus().equals(TransactionStatus.BORROWED))){
+            throw new BussinessException("nguoi muon van con sach chua tra");
+        }
+
         List<Book> bookList = bookRepository.findByIdIn(transactionCreateRequest.getBookIds());
         Set<Integer> foundIds = bookList.stream().map(Book::getId).collect(Collectors.toSet());
         List<Integer> missingIds = transactionCreateRequest.getBookIds()
@@ -149,6 +154,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         if(transaction.getStatus() == TransactionStatus.RETURNED && isLibrarian) {
             throw new BussinessException("Khong the cap nhat phieu da hoan tra");
+        }
+        if(transaction.getStatus() == TransactionStatus.BORROWED && transaction.getReturnDate() != null) {
+            throw new BussinessException("nguoi muon chua tra sach");
         }
         transactionMapper.fromUpdate(transactionUpdateRequest, transaction);
         transactionRepository.save(transaction);

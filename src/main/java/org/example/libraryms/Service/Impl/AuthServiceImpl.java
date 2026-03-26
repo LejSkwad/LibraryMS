@@ -4,7 +4,6 @@ import org.example.libraryms.DTO.Auth.Request.LoginRequest;
 import org.example.libraryms.DTO.Auth.Response.LoginResponse;
 import org.example.libraryms.Entity.User;
 import org.example.libraryms.Exception.BussinessException;
-import org.example.libraryms.Mapper.UserMapper;
 import org.example.libraryms.Repository.UserRepository;
 import org.example.libraryms.Security.JwtUtil;
 import org.example.libraryms.Service.AuthService;
@@ -26,11 +25,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findBySocialNumber(loginRequest.getSocialNumber());
-        if(user == null) {
-            throw new BussinessException("User not found");
-        }
-        if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new BussinessException("Password does not match");
+        if(user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new BussinessException("sai thong tin dang nhap");
         }
         String token = jwtUtil.generateToken(user.getSocialNumber(), user.getRole().name());
 

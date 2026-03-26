@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = userMapper.fromCreate(userCreateRequest);
-        newUser.setPassword(userCreateRequest.getPassword());
+        newUser.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
 
         userRepository.save(newUser);
     }
