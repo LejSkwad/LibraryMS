@@ -10,7 +10,6 @@ import org.example.libraryms.Entity.*;
 import org.example.libraryms.Exception.BussinessException;
 import org.example.libraryms.Mapper.TransactionMapper;
 import org.example.libraryms.Repository.BookRepository;
-import org.example.libraryms.Repository.TransactionItemRepository;
 import org.example.libraryms.Repository.TransactionRepository;
 import org.example.libraryms.Repository.UserRepository;
 import org.example.libraryms.Service.TransactionService;
@@ -36,8 +35,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   TransactionMapper transactionMapper,
-                                  TransactionItemRepository transactionItemRepository,
-                                  BookRepository bookRepository, UserRepository userRepository) {
+                                  BookRepository bookRepository,
+                                  UserRepository userRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.bookRepository = bookRepository;
@@ -55,6 +54,15 @@ public class TransactionServiceImpl implements TransactionService {
         }
         if(transactionSearchRequest.getSocialNumber() != null){
             spec = spec.and(TransactionSpecification.socialNumberLike(transactionSearchRequest.getSocialNumber()));
+        }
+        if(transactionSearchRequest.getBorrowDateFrom() != null || transactionSearchRequest.getBorrowDateTo() != null){
+            spec = spec.and(TransactionSpecification.borrowDateBetween(transactionSearchRequest.getBorrowDateFrom(), transactionSearchRequest.getBorrowDateTo()));
+        }
+        if(transactionSearchRequest.getDueDateFrom() != null || transactionSearchRequest.getDueDateTo() != null){
+            spec = spec.and(TransactionSpecification.dueDateBetween(transactionSearchRequest.getDueDateFrom(), transactionSearchRequest.getDueDateTo()));
+        }
+        if(transactionSearchRequest.getReturnDateFrom() != null || transactionSearchRequest.getReturnDateTo() != null){
+            spec = spec.and(TransactionSpecification.returnDateBetween(transactionSearchRequest.getReturnDateFrom(), transactionSearchRequest.getReturnDateTo()));
         }
 
         Page<Transaction> transactionPage = transactionRepository.findAll(spec, pageable);
@@ -167,6 +175,10 @@ public class TransactionServiceImpl implements TransactionService {
     public void delete(Integer id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+        if(transaction.getStatus() != TransactionStatus.RETURNED) {
+            throw new BussinessException("khong the xoa phieu chua hoan tra");
+        }
+
         transactionRepository.delete(transaction);
     }
 }

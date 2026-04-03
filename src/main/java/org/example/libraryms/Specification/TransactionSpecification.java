@@ -43,4 +43,28 @@ public class TransactionSpecification {
         });
 
     }
+
+    public static Specification<Transaction> borrowDateBetween(LocalDate from, LocalDate to) {
+        return (root, query, builder) -> {
+            if (from != null && to != null) return builder.between(root.get("borrowDate"), from, to);
+            if (from != null) return builder.greaterThanOrEqualTo(root.get("borrowDate"), from);
+            return builder.lessThanOrEqualTo(root.get("borrowDate"), to);
+        };
+    }
+
+    public static Specification<Transaction> dueDateBetween(LocalDate from, LocalDate to) {
+        return (root, query, builder) -> {
+            if (from != null && to != null) return builder.between(root.get("dueDate"), from, to);
+            if (from != null) return builder.greaterThanOrEqualTo(root.get("dueDate"), from);
+            return builder.lessThanOrEqualTo(root.get("dueDate"), to);
+        };
+    }
+
+    public static Specification<Transaction> returnDateBetween(LocalDate from, LocalDate to) {
+        return (root, query, builder) -> {
+            if (from != null && to != null) return builder.between(root.get("returnDate"), from, to);
+            if (from != null) return builder.greaterThanOrEqualTo(root.get("returnDate"), from);
+            return builder.lessThanOrEqualTo(root.get("returnDate"), to);
+        };
+    }
 }
