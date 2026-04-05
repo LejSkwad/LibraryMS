@@ -163,7 +163,7 @@ public class TransactionServiceImpl implements TransactionService {
         if(transaction.getStatus() == TransactionStatus.RETURNED && isLibrarian) {
             throw new BussinessException("Khong the cap nhat phieu da hoan tra");
         }
-        if(transaction.getStatus() == TransactionStatus.BORROWED && transaction.getReturnDate() != null) {
+        if(transaction.getStatus() == TransactionStatus.BORROWED && transactionUpdateRequest.getReturnDate() != null) {
             throw new BussinessException("nguoi muon chua tra sach");
         }
         transactionMapper.fromUpdate(transactionUpdateRequest, transaction);
