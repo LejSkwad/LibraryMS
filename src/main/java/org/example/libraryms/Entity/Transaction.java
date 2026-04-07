@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.util.List;
-
 
 @Entity
 @Data
@@ -19,16 +19,13 @@ public class Transaction {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "social_number")
-    private String socialNumber;
-
-    @Column(name = "borrow_date")
+    @Column(name = "borrow_date", nullable = false)
     private LocalDate borrowDate;
 
-    @Column(name = "due_date")
+    @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 
     @Column(name = "return_date")
@@ -38,6 +35,6 @@ public class Transaction {
     private List<TransactionItem> items;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private TransactionStatus status;
 }

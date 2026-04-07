@@ -52,8 +52,8 @@ public class TransactionServiceImpl implements TransactionService {
         if(transactionSearchRequest.getKeyword() != null){
             spec = spec.and(TransactionSpecification.globalSearch(transactionSearchRequest.getKeyword()));
         }
-        if(transactionSearchRequest.getSocialNumber() != null){
-            spec = spec.and(TransactionSpecification.socialNumberLike(transactionSearchRequest.getSocialNumber()));
+        if(transactionSearchRequest.getMemberId() != null){
+            spec = spec.and(TransactionSpecification.memberIdLike(transactionSearchRequest.getMemberId()));
         }
         if(transactionSearchRequest.getBorrowDateFrom() != null || transactionSearchRequest.getBorrowDateTo() != null){
             spec = spec.and(TransactionSpecification.borrowDateBetween(transactionSearchRequest.getBorrowDateFrom(), transactionSearchRequest.getBorrowDateTo()));
@@ -116,7 +116,6 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = transactionMapper.fromCreate(transactionCreateRequest);
         transaction.setUser(user);
-        transaction.setSocialNumber(user.getSocialNumber());
         transaction.setStatus(TransactionStatus.BORROWED);
 
         List<TransactionItem> transactionItems = bookList.stream()

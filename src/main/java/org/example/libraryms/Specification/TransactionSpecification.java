@@ -16,9 +16,9 @@ public class TransactionSpecification {
         });
     }
 
-    public static Specification<Transaction> socialNumberLike(String socialNumber){
+    public static Specification<Transaction> memberIdLike(String memberId){
         return ((root, query, builder) -> {
-            return builder.like(builder.lower(root.get("user").get("socialNumber")), "%" + socialNumber.toLowerCase() + "%");
+            return builder.like(builder.lower(root.get("user").get("memberId")), "%" + memberId.toLowerCase() + "%");
         });
     }
 

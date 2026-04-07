@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookUpdateRequest {
+
+    private String isbn;
+
     @NotBlank
     private String title;
 
@@ -27,4 +30,8 @@ public class BookUpdateRequest {
 
     @NotNull
     private Integer quantity;
+
+    private String description;
+    private String coverImage;
+    private Integer pageCount;
 }

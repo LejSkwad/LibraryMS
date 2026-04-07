@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookCreateRequest {
 
+    private String isbn;
+
     @NotBlank
     private String title;
 
@@ -29,4 +31,7 @@ public class BookCreateRequest {
     @NotNull
     private Integer quantity;
 
+    private String description;
+    private String coverImage;
+    private Integer pageCount;
 }

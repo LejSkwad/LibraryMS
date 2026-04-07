@@ -33,10 +33,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 jwtUtil.validateToken(token);
                 Claims claims = jwtUtil.extractClaims(token);
                 String role = claims.get("role", String.class);
-                String socialNumber = claims.getSubject();
+                String email = claims.getSubject();
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(socialNumber, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+                        new UsernamePasswordAuthenticationToken(email, null, List.of(new SimpleGrantedAuthority("ROLE_" + role)));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

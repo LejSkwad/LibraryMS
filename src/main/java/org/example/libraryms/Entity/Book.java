@@ -1,11 +1,11 @@
 package org.example.libraryms.Entity;
 
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @Entity
 @Data
@@ -18,13 +18,16 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "title")
+    @Column(name = "isbn", unique = true)
+    private String isbn;
+
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "author")
+    @Column(name = "author", nullable = false)
     private String author;
 
-    @Column(name = "publisher")
+    @Column(name = "publisher", nullable = false)
     private String publisher;
 
     @Column(name = "published_year")
@@ -34,11 +37,20 @@ public class Book {
     @JoinColumn(name = "category")
     private Category category;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "available_quantity")
+    @Column(name = "available_quantity", nullable = false)
     private Integer availableQuantity;
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "cover_image")
+    private String coverImage;
+
+    @Column(name = "page_count")
+    private Integer pageCount;
 
     @OneToMany(mappedBy = "book")
     private List<TransactionItem> transactionItems;

@@ -14,16 +14,17 @@ import org.mapstruct.MappingTarget;
 public interface TransactionMapper {
 
     @Mapping(target = "userName", expression = "java(transaction.getUser().getFirstName() + \" \" + transaction.getUser().getLastName())")
+    @Mapping(source = "user.memberId", target = "memberId")
     TransactionSearchResponse toSearchResponse(Transaction transaction);
 
-    @Mapping(target = "bookId", source = "book.id")
-    @Mapping(target = "bookTitle", source = "book.title")
-    @Mapping(target = "author", source = "book.author")
-    @Mapping(target = "publisher", source = "book.publisher")
+    @Mapping(target = "bookId",       source = "book.id")
+    @Mapping(target = "bookTitle",    source = "book.title")
+    @Mapping(target = "author",       source = "book.author")
+    @Mapping(target = "publisher",    source = "book.publisher")
     @Mapping(target = "publishedYear", source = "book.publishedYear")
     TransactionItemsResponse toItemResponse(TransactionItem transactionItem);
 
     void fromUpdate(TransactionUpdateRequest transactionUpdateRequest, @MappingTarget Transaction transaction);
 
-    Transaction fromCreate (TransactionCreateRequest transactionCreateRequest);
+    Transaction fromCreate(TransactionCreateRequest transactionCreateRequest);
 }

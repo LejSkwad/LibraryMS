@@ -23,17 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository,
-                           UserMapper userMapper,
-                           PasswordEncoder passwordEncoder
-                           ) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
@@ -44,52 +40,56 @@ public class UserServiceImpl implements UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isLibrarian = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
-        if(isLibrarian) {
+        if (isLibrarian) {
             userSearchRequest.setRole(String.valueOf(Role.BORROWER));
         }
         Specification<User> spec = (root, query, builder) -> builder.conjunction();
         if (userSearchRequest.getKeyword() != null) {
             spec = spec.and(UserSpecification.globalSearch(userSearchRequest.getKeyword()));
         }
-        if(userSearchRequest.getRole() != null) {
+        if (userSearchRequest.getRole() != null) {
             spec = spec.and(UserSpecification.roleEqual(userSearchRequest.getRole()));
         }
-        if(userSearchRequest.getCreateDateFrom() != null || userSearchRequest.getCreateDateTo() != null) {
-            spec = spec.and(UserSpecification.registrationDateBetween(userSearchRequest.getCreateDateFrom(), userSearchRequest.getCreateDateTo()));
+        if (userSearchRequest.getCreateDateFrom() != null || userSearchRequest.getCreateDateTo() != null) {
+            spec = spec.and(UserSpecification.registrationDateBetween(
+                    userSearchRequest.getCreateDateFrom(), userSearchRequest.getCreateDateTo()));
         }
 
-        Page<User> userPage = userRepository.findAll(spec, pageable);
-        Page<UserSearchResponse> responsePage = userPage.map(user -> {
+        return userRepository.findAll(spec, pageable).map(user -> {
             UserSearchResponse response = userMapper.toSearchResponse(user);
-            response.setBorrowingCount((int) user.getTransactions()
-                    .stream()
+            response.setBorrowingCount((int) user.getTransactions().stream()
                     .filter(t -> t.getStatus() == TransactionStatus.BORROWED)
                     .count());
             return response;
         });
-
-        return responsePage;
     }
 
     @Override
     public UserProfileResponse getProfile(Integer id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BussinessException("User not found"));
-        UserProfileResponse userProfileResponse = userMapper.toProfileResponse(user);
-        return userProfileResponse;
+        return userMapper.toProfileResponse(user);
     }
 
     @Override
     @Transactional
     public void create(UserCreateRequest userCreateRequest) {
-        User user = userRepository.findBySocialNumber(userCreateRequest.getSocialNumber());
-        if(user != null) {
-            throw new BussinessException("Social Number has already been used");
+        if (userRepository.findByMemberId(userCreateRequest.getMemberId()) != null) {
+            throw new BussinessException("Member ID already exists");
+        }
+        if (userCreateRequest.getEmail() != null && !userCreateRequest.getEmail().isBlank()) {
+            if (userRepository.findByEmail(userCreateRequest.getEmail()) != null) {
+                throw new BussinessException("Email already exists");
+            }
+            if (userCreateRequest.getPassword() == null || userCreateRequest.getPassword().isBlank()) {
+                throw new BussinessException("Password is required when email is provided");
+            }
         }
 
         User newUser = userMapper.fromCreate(userCreateRequest);
-        newUser.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
-
+        if (userCreateRequest.getPassword() != null && !userCreateRequest.getPassword().isBlank()) {
+            newUser.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
+        }
         userRepository.save(newUser);
     }
 
@@ -102,10 +102,11 @@ public class UserServiceImpl implements UserService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isLibrarian = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
+        String authEmail = auth.getName();
 
-        String authSocialNumber = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(isLibrarian && existedUser.getRole() != Role.BORROWER && existedUser.getSocialNumber() != authSocialNumber) {
-            throw new BussinessException("Cannot update user that is not borrower or yourself");
+        if (isLibrarian && existedUser.getRole() != Role.BORROWER
+                && !existedUser.getEmail().equals(authEmail)) {
+            throw new BussinessException("Cannot update user that is not a borrower or yourself");
         }
         userMapper.fromUpdate(userUpdateRequest, existedUser);
         userRepository.save(existedUser);
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BussinessException("User not found"));
         if (user.getRole() == Role.BORROWER && !user.getTransactions().isEmpty()) {
-            throw new BussinessException("Cannot delete borrower account with transactions history");
+            throw new BussinessException("Cannot delete borrower with transaction history");
         }
         userRepository.delete(user);
     }
@@ -128,16 +129,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BussinessException("User not found"));
 
-        String socialNumber = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(!user.getSocialNumber().equals(socialNumber)) {
-            throw new BussinessException("Cannot change other people's password");
+        String authEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!authEmail.equals(user.getEmail())) {
+            throw new BussinessException("Cannot change another user's password");
         }
-
-        if(!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
+        if (user.getPassword() == null
+                || !passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
             throw new BussinessException("Wrong password");
         }
-        if(!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getNewPasswordConfirmation())) {
-            throw new BussinessException("new passwords do not match");
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getNewPasswordConfirmation())) {
+            throw new BussinessException("New passwords do not match");
         }
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "borrow_request")
+@Table(name = "borrow_requests")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,11 +29,12 @@ public class BorrowRequest {
     @Column(name = "status")
     private BorrowRequestStatus status;
 
-    private LocalDate createDate;
+    @Column(name = "request_date")
+    private LocalDate requestDate;
 
     @PrePersist
     public void prePersist() {
-        this.createDate = LocalDate.now();
+        this.requestDate = LocalDate.now();
         if(this.status == null) this.status = BorrowRequestStatus.PENDING;
     }
 }

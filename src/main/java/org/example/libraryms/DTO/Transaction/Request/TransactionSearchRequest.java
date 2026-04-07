@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TransactionSearchRequest {
     private String keyword;
-    private String socialNumber;
+    private String memberId;
     private String status;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")

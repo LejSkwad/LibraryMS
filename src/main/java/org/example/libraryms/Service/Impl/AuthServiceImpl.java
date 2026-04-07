@@ -24,11 +24,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findBySocialNumber(loginRequest.getSocialNumber());
-        if(user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new BussinessException("sai thong tin dang nhap");
+        User user = userRepository.findByEmail(loginRequest.getEmail());
+        if (user == null || user.getPassword() == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new BussinessException("Sai thông tin đăng nhập");
         }
-        String token = jwtUtil.generateToken(user.getSocialNumber(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setId(user.getId());

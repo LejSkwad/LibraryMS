@@ -1,7 +1,6 @@
 package org.example.libraryms.DTO.User.Request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserCreateRequest {
     @NotBlank
+    private String memberId;
+
+    // optional — walk-in accounts may have no email
+    private String email;
+
+    // optional — only required if email is provided (enforced in service)
     private String password;
 
     @NotBlank
@@ -26,7 +31,4 @@ public class UserCreateRequest {
     private String role;
 
     private String address;
-
-    @NotBlank
-    private String socialNumber;
 }

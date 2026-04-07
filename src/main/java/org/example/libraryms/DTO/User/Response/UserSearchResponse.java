@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserSearchResponse {
     private Integer id;
-    private String socialNumber;
+    private String memberId;
+    private String email;
     private String fullName;
     private String role;
     private String phone;

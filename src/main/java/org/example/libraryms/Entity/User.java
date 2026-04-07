@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,30 +18,32 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "social_number")
-    private String socialNumber;
+    @Column(name = "member_id", nullable = false, unique = true)
+    private String memberId;
+
+    @Column(name = "email", unique = true)
+    private String email;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name = "phone")
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     @Column(name = "address")
     private String address;
 
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @Column(name = "registration_date")
+    @Column(name = "registration_date", nullable = false)
     private LocalDate registrationDate;
 
     @OneToMany(mappedBy = "user")

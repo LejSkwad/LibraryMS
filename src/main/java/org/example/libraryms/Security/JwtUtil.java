@@ -22,9 +22,9 @@ public class JwtUtil {
         this.expiration = expiration;
     }
 
-    public String generateToken(String socialNumber, String role) {
+    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .subject(socialNumber)
+                .subject(email)
                 .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
@@ -32,7 +32,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    //map token tra ve (userId, role, expiration,...)
     public Claims extractClaims(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -42,7 +41,7 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token) {
-        try{
+        try {
             extractClaims(token);
             return true;
         } catch (JwtException e) {
