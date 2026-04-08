@@ -24,18 +24,18 @@ public class BookController {
     @GetMapping("/v1/books")
     public ResponseEntity<BaseResponse<Page<BookSearchResponse>>> getBooks(@ModelAttribute BookSearchRequest bookSearchRequest, Pageable pageable) {
         Page<BookSearchResponse> data = bookService.search(bookSearchRequest, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "Lay sach thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "Lấy sách thành công"));
     }
 
     @PostMapping("/v1/books")
     public ResponseEntity<BaseResponse<Void>> create(@Valid @RequestBody BookCreateRequest bookCreateRequest) {
         bookService.create(bookCreateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Them sach thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Thêm sách thành công"));
     }
 
     @PutMapping("/v1/books/{id}")
     public ResponseEntity<BaseResponse<Void>> update(@PathVariable Integer id, @Valid @RequestBody BookUpdateRequest bookUpdateRequest){
         bookService.update(id, bookUpdateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cap nhat sach thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cập nhật sách thành công"));
     }
 }

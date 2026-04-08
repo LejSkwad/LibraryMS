@@ -22,7 +22,7 @@ public class AuthController {
     @PostMapping("/v1/auth/login")
     public ResponseEntity<BaseResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest){
         LoginResponse data = authService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "dang nhap thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "Đăng nhập thành công"));
     }
 
     @PostMapping("/v1/auth/register")

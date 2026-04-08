@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileResponse getProfile(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("User not found"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy tài khoản"));
         return userMapper.toProfileResponse(user);
     }
 

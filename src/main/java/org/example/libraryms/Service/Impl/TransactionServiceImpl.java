@@ -74,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<TransactionItemsResponse> getItems(Integer id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy lịch sử giao dịch"));
         List<TransactionItem> transactionItems = transaction.getItems();
         List<TransactionItemsResponse> responseItems = transactionItems.stream()
                 .map(transactionMapper::toItemResponse)
@@ -87,11 +87,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public void create(TransactionCreateRequest transactionCreateRequest) {
         User user = userRepository.findById(transactionCreateRequest.getUserId())
-                .orElseThrow(() -> new BussinessException("Cannot find user"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy tài khoản người dùng"));
 
         if(user.getTransactions().stream().anyMatch(
                 t -> t.getStatus().equals(TransactionStatus.BORROWED))){
-            throw new BussinessException("nguoi muon van con sach chua tra");
+            throw new BussinessException("Tài khoản vẫn còn sách chưa trả");
         }
 
         List<Book> bookList = bookRepository.findByIdIn(transactionCreateRequest.getBookIds());
@@ -102,7 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .toList();
 
         if (!missingIds.isEmpty()) {
-            throw new BussinessException("Cannot find books" + missingIds);
+            throw new BussinessException("Không thể tìm thấy sách" + missingIds);
         }
 
         List<String> outOfStock = bookList.stream()
@@ -111,7 +111,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .toList();
 
         if (!outOfStock.isEmpty()) {
-            throw new BussinessException("Books out of stock: " + outOfStock);
+            throw new BussinessException("Hết sách: " + outOfStock);
         }
 
         Transaction transaction = transactionMapper.fromCreate(transactionCreateRequest);
@@ -138,7 +138,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public void bookReturn(Integer id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy giao dịch"));
 
         transaction.setReturnDate(LocalDate.now());
         transaction.setStatus(TransactionStatus.RETURNED);
@@ -154,16 +154,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public void update(Integer id, TransactionUpdateRequest transactionUpdateRequest) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy giao dịch"));
 
         boolean isLibrarian = SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_LIBRARIAN"));
 
         if(transaction.getStatus() == TransactionStatus.RETURNED && isLibrarian) {
-            throw new BussinessException("Khong the cap nhat phieu da hoan tra");
+            throw new BussinessException("Không thể cập nhật");
         }
         if(transaction.getStatus() == TransactionStatus.BORROWED && transactionUpdateRequest.getReturnDate() != null) {
-            throw new BussinessException("nguoi muon chua tra sach");
+            throw new BussinessException("Người mượn chưa trả sách");
         }
         transactionMapper.fromUpdate(transactionUpdateRequest, transaction);
         transactionRepository.save(transaction);
@@ -173,9 +173,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public void delete(Integer id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("Cannot find transaction"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy giao dịch"));
         if(transaction.getStatus() != TransactionStatus.RETURNED) {
-            throw new BussinessException("khong the xoa phieu chua hoan tra");
+            throw new BussinessException("Không thể xóa giao dịch chưa hoàn trả");
         }
 
         transactionRepository.delete(transaction);

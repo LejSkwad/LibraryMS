@@ -40,6 +40,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/category").permitAll()
                         .requestMatchers("/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers("/v1/transactions/**").hasAnyRole("ADMIN","LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET, "/v1/borrow-requests").hasAnyRole("ADMIN","LIBRARIAN","BORROWER")
+                        .requestMatchers(HttpMethod.POST, "/v1/borrow-requests").hasRole("BORROWER")
+                        .requestMatchers(HttpMethod.PUT, "/v1/borrow-requests/*/approve").hasAnyRole("ADMIN","LIBRARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/v1/borrow-requests/*/reject").hasAnyRole("ADMIN","LIBRARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/v1/borrow-requests/*").hasRole("BORROWER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

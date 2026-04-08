@@ -28,37 +28,37 @@ public class TransactionController {
     @GetMapping("/v1/transactions")
     public ResponseEntity<BaseResponse<Page<TransactionSearchResponse>>> search(@ModelAttribute TransactionSearchRequest transactionSearchRequest, Pageable pageable){
         Page<TransactionSearchResponse> data = transactionService.search(transactionSearchRequest, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "tim transaction thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "Lấy giao dịch thành công"));
     }
 
     @GetMapping("/v1/transactions/{id}")
     public ResponseEntity<BaseResponse<List<TransactionItemsResponse>>> getItems(@PathVariable Integer id){
         List<TransactionItemsResponse> data = transactionService.getItems(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "lay items thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(data, "Lấy chi tiết giao dịch thành công"));
     }
 
     @PostMapping("/v1/transactions")
     public ResponseEntity<BaseResponse<Void>> create(@Valid @RequestBody TransactionCreateRequest transactionCreateRequest){
         transactionService.create(transactionCreateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "tao transaction thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Tạo giao dịch thành công"));
     }
 
     @PutMapping("/v1/transactions/return-books/{id}")
     public ResponseEntity<BaseResponse<Void>> bookReturn(@PathVariable Integer id){
         transactionService.bookReturn(id);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "tra sach thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Trả sách thành công"));
     }
 
     @PutMapping("/v1/transactions/{id}")
     public ResponseEntity<BaseResponse<Void>> update(@PathVariable Integer id, @Valid @RequestBody TransactionUpdateRequest transactionUpdateRequest){
         transactionService.update(id, transactionUpdateRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "cap nhat transaction thanh cong"));
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cập nhật giao dịch thành công"));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/v1/transactions/{id}")
     public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer id){
         transactionService.delete(id);
-       return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "xoa transaction thanh cong"));
+       return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Xóa giao dịch thành công"));
     }
 }

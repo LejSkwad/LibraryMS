@@ -22,7 +22,7 @@ public class BorrowRequest {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "borrowRequest")
+    @OneToMany(mappedBy = "borrowRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BorrowRequestItem> borrowRequestItem;
 
     @Enumerated(EnumType.STRING)

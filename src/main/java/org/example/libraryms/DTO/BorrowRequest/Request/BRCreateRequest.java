@@ -12,8 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BRCreateRequest {
-    @NotNull
-    private Integer userId;
     @NotEmpty
     private List<Integer> bookIds;
 }
