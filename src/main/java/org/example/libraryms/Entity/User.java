@@ -18,7 +18,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "member_id", nullable = false, unique = true)
+    @Column(name = "member_id", unique = true)
     private String memberId;
 
     @Column(name = "email", unique = true)
@@ -37,7 +37,7 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone")
     private String phone;
 
     @Column(name = "address")

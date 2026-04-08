@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS category (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
     id                INT          NOT NULL AUTO_INCREMENT,
-    member_id         VARCHAR(20)  NOT NULL,
+    member_id         VARCHAR(20)  ,
     email             VARCHAR(255),
     password          VARCHAR(255),
     first_name        VARCHAR(100) NOT NULL,

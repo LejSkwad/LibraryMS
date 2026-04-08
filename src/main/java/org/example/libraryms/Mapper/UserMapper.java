@@ -1,5 +1,6 @@
 package org.example.libraryms.Mapper;
 
+import org.example.libraryms.DTO.Auth.Request.RegisterRequest;
 import org.example.libraryms.DTO.User.Request.UserCreateRequest;
 import org.example.libraryms.DTO.User.Request.UserUpdateRequest;
 import org.example.libraryms.DTO.User.Response.UserProfileResponse;
@@ -16,7 +17,12 @@ public interface UserMapper {
 
     UserProfileResponse toProfileResponse(User user);
 
+    @Mapping(target = "memberId", ignore = true)
     User fromCreate(UserCreateRequest userCreateRequest);
+
+    @Mapping(target = "memberId", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    User fromRegister(RegisterRequest registerRequest);
 
     void fromUpdate(UserUpdateRequest userUpdateRequest, @MappingTarget User user);
 }

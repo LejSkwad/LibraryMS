@@ -1,5 +1,6 @@
-package org.example.libraryms.DTO.User.Request;
+package org.example.libraryms.DTO.Auth.Request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +9,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreateRequest {
+public class ClaimAccountRequest {
+    @NotBlank
+    private String memberId;
+
+    @NotBlank
+    @Email
     private String email;
 
+    @NotBlank
     private String password;
 
     @NotBlank
@@ -18,11 +25,4 @@ public class UserCreateRequest {
 
     @NotBlank
     private String lastName;
-
-    private String phone;
-
-    @NotBlank
-    private String role;
-
-    private String address;
 }

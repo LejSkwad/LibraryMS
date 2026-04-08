@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateRequest {
-    @NotBlank
     private String phone;
 
-    @NotBlank
     private String address;
 }

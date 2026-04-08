@@ -74,15 +74,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void create(UserCreateRequest userCreateRequest) {
-        if (userRepository.findByMemberId(userCreateRequest.getMemberId()) != null) {
-            throw new BussinessException("Member ID already exists");
-        }
         if (userCreateRequest.getEmail() != null && !userCreateRequest.getEmail().isBlank()) {
             if (userRepository.findByEmail(userCreateRequest.getEmail()) != null) {
-                throw new BussinessException("Email already exists");
+                throw new BussinessException("Email đã tồn tại");
             }
             if (userCreateRequest.getPassword() == null || userCreateRequest.getPassword().isBlank()) {
-                throw new BussinessException("Password is required when email is provided");
+                throw new BussinessException("Yêu cầu nhập mật khẩu");
             }
         }
 
@@ -90,6 +87,8 @@ public class UserServiceImpl implements UserService {
         if (userCreateRequest.getPassword() != null && !userCreateRequest.getPassword().isBlank()) {
             newUser.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
         }
+        userRepository.saveAndFlush(newUser);
+        newUser.setMemberId("LIB-" + String.format("%06d", newUser.getId()));
         userRepository.save(newUser);
     }
 
@@ -97,7 +96,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(Integer id, UserUpdateRequest userUpdateRequest) {
         User existedUser = userRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("User not found"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy tài khoản"));
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isLibrarian = auth.getAuthorities().stream()
@@ -106,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
         if (isLibrarian && existedUser.getRole() != Role.BORROWER
                 && !existedUser.getEmail().equals(authEmail)) {
-            throw new BussinessException("Cannot update user that is not a borrower or yourself");
+            throw new BussinessException("Không có quyền cập nhật tài khoản này");
         }
         userMapper.fromUpdate(userUpdateRequest, existedUser);
         userRepository.save(existedUser);
@@ -116,9 +115,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void delete(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("User not found"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy tài khoản"));
         if (user.getRole() == Role.BORROWER && !user.getTransactions().isEmpty()) {
-            throw new BussinessException("Cannot delete borrower with transaction history");
+            throw new BussinessException("Không thể xóa tài khoản đã có lịch sử mượn");
         }
         userRepository.delete(user);
     }
@@ -127,18 +126,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void changePassword(Integer id, ChangePasswordRequest changePasswordRequest) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("User not found"));
+                .orElseThrow(() -> new BussinessException("Không tìm thấy tài khoản"));
 
         String authEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         if (!authEmail.equals(user.getEmail())) {
-            throw new BussinessException("Cannot change another user's password");
+            throw new BussinessException("Không thể thay đổi mật khẩu");
         }
         if (user.getPassword() == null
                 || !passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
-            throw new BussinessException("Wrong password");
+            throw new BussinessException("Sai mật khẩu");
         }
         if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getNewPasswordConfirmation())) {
-            throw new BussinessException("New passwords do not match");
+            throw new BussinessException("Mật khẩu mới không khớp");
+        }
+        if(passwordEncoder.matches(changePasswordRequest.getNewPassword(), user.getPassword())) {
+            throw new BussinessException("Mật khẩu mới không được trùng với mật khẩu cũ");
         }
         user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
         userRepository.save(user);
