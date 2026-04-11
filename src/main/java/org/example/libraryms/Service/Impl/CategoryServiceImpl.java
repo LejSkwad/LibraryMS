@@ -32,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void create(String name) {
         if(categoryRepository.existsByNameIgnoreCaseAndTrimmed(name)){
-            throw new BussinessException("category already exists");
+            throw new BussinessException("Thể loại sách đã tồn tại");
         }
 
         Category category = new Category();
@@ -44,8 +44,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void delete(Integer id) {
-        categoryRepository.findById(id)
-                .orElseThrow(() -> new BussinessException("category not found"));
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new BussinessException("Không tìm thấy Thể loại sách"));
+        if (!category.getBooks().isEmpty()) {
+            throw new BussinessException("Không thể xóa Thể loại sách");
+        }
         categoryRepository.deleteById(id);
     }
 }

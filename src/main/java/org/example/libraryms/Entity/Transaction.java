@@ -31,7 +31,7 @@ public class Transaction {
     @Column(name = "return_date")
     private LocalDate returnDate;
 
-    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TransactionItem> items;
 
     @Enumerated(EnumType.STRING)

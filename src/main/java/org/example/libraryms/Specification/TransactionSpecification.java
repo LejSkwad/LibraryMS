@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
 public class TransactionSpecification {
-    public static Specification<Transaction> globalSearch(String keyword){
+    public static Specification<Transaction> nameLike(String keyword){
         return ((root, query, builder) -> {
             return builder.or(
                     builder.like(builder.lower(root.get("user").get("firstName")), "%" + keyword.toLowerCase() + "%"),

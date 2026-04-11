@@ -1,5 +1,6 @@
 package org.example.libraryms.DTO.BorrowRequest.Response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,8 @@ public class BRSearchResponse {
     private Integer id;
     private String userName;
     private String memberId;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate requestDate;
     private String status;
     private List<BookInfo> books;

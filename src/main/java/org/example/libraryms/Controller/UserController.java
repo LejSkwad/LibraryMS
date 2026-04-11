@@ -53,7 +53,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Xóa tài khoản thành công"));
     }
 
-    @PutMapping("/v1/users/change-password/{id}")
+    @PutMapping("/v1/users/profile/change-password/{id}")
     public ResponseEntity<BaseResponse<Void>> changePassword(@PathVariable Integer id, @Valid @RequestBody ChangePasswordRequest changePasswordRequest){
         userService.changePassword(id, changePasswordRequest);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Thay đổi mật khẩu thành công"));

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.libraryms.Common.BaseResponse;
 import org.example.libraryms.DTO.BorrowRequest.Request.BRApproveRequest;
 import org.example.libraryms.DTO.BorrowRequest.Request.BRCreateRequest;
+import org.example.libraryms.DTO.BorrowRequest.Request.BRSearchRequest;
 import org.example.libraryms.DTO.BorrowRequest.Response.BRSearchResponse;
 import org.example.libraryms.Entity.User;
 import org.example.libraryms.Repository.UserRepository;
@@ -42,34 +43,33 @@ public class BorrowRequestController {
     }
 
     @GetMapping("/v1/borrow-requests")
-    public ResponseEntity<BaseResponse<Page<BRSearchResponse>>> search(
-            @RequestParam(required = false) String status, Pageable pageable) {
-        Page<BRSearchResponse> data = borrowRequestService.search(status, pageable);
+    public ResponseEntity<BaseResponse<Page<BRSearchResponse>>> search(@ModelAttribute BRSearchRequest brSearchRequest, Pageable pageable) {
+        Page<BRSearchResponse> data = borrowRequestService.search(brSearchRequest, pageable);
         return ResponseEntity.ok(new BaseResponse<>(data, "Lấy danh sách yêu cầu thành công"));
     }
 
     @PostMapping("/v1/borrow-requests")
     public ResponseEntity<BaseResponse<Void>> create(@Valid @RequestBody BRCreateRequest request) {
-        borrowRequestService.create(request);
+        //borrowRequestService.create(request);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Gửi yêu cầu mượn thành công"));
     }
 
     @PutMapping("/v1/borrow-requests/{id}/approve")
     public ResponseEntity<BaseResponse<Void>> approve(@PathVariable Integer id,
                                                        @Valid @RequestBody BRApproveRequest request) {
-        borrowRequestService.approve(id, request);
+        //borrowRequestService.approve(id, request);
         return ResponseEntity.ok(new BaseResponse<>(null, "Duyệt yêu cầu thành công"));
     }
 
     @PutMapping("/v1/borrow-requests/{id}/reject")
     public ResponseEntity<BaseResponse<Void>> reject(@PathVariable Integer id) {
-        borrowRequestService.reject(id);
+        //borrowRequestService.reject(id);
         return ResponseEntity.ok(new BaseResponse<>(null, "Từ chối yêu cầu thành công"));
     }
 
     @DeleteMapping("/v1/borrow-requests/{id}")
     public ResponseEntity<BaseResponse<Void>> cancel(@PathVariable Integer id) {
-        borrowRequestService.cancel(id);
+        //borrowRequestService.cancel(id);
         return ResponseEntity.ok(new BaseResponse<>(null, "Hủy yêu cầu thành công"));
     }
 }

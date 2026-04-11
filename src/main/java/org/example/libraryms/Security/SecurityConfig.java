@@ -34,17 +34,30 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/v1/users/change-password").hasAnyRole("ADMIN", "LIBRARIAN", "BORROWER")
-                        .requestMatchers("/v1/users/**").hasAnyRole("ADMIN","LIBRARIAN","BORROWER")
-                        .requestMatchers("/v1/books/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/category").permitAll()
-                        .requestMatchers("/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
-                        .requestMatchers("/v1/transactions/**").hasAnyRole("ADMIN","LIBRARIAN")
-                        .requestMatchers(HttpMethod.GET, "/v1/borrow-requests").hasAnyRole("ADMIN","LIBRARIAN","BORROWER")
-                        .requestMatchers(HttpMethod.POST, "/v1/borrow-requests").hasRole("BORROWER")
-                        .requestMatchers(HttpMethod.PUT, "/v1/borrow-requests/*/approve").hasAnyRole("ADMIN","LIBRARIAN")
-                        .requestMatchers(HttpMethod.PUT, "/v1/borrow-requests/*/reject").hasAnyRole("ADMIN","LIBRARIAN")
-                        .requestMatchers(HttpMethod.DELETE, "/v1/borrow-requests/*").hasRole("BORROWER")
+
+                        //GET requires authen with any ROLE
+                        .requestMatchers(HttpMethod.POST, "/v1/books").hasAnyRole("ADMIN", "LIBRARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/v1/books").hasAnyRole("ADMIN", "LIBRARIAN")
+
+                        //GET + DELETE requires authen with any ROLE
+                        .requestMatchers(HttpMethod.POST,"/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
+                        .requestMatchers(HttpMethod.PUT,"/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
+
+                        /*
+                         * GET profile + ChangePassword + UPDATE requires authen with any ROLE
+                         *  GET users + CREATE + DELETE hasAnyRole(ADMIN, LIBRARIAN)
+                         */
+                        .requestMatchers("/v1/users/profile/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/v1/users/**").authenticated()
+                        .requestMatchers("/v1/users/**").hasAnyRole("ADMIN", "LIBRARIAN")
+
+                        /* TRANSACTION CONFIG */
+
+
+                        /* BORROW-REQUEST CONFIG */
+
+
+
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -16,10 +16,9 @@ public interface BookMapper {
     BookSearchResponse toSearchResponse(Book book);
 
     @Mapping(source = "quantity", target = "availableQuantity")
-    @Mapping(target = "category", ignore = true)
     Book fromCreate(BookCreateRequest bookCreateRequest);
 
-    @Mapping(target = "category", ignore = true)
+
     @Mapping(target = "availableQuantity", ignore = true)
     void fromUpdate(BookUpdateRequest bookUpdateRequest, @MappingTarget Book book);
 }

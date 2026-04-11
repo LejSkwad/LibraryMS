@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionSearchRequest {
-    private String keyword;
+    private String name;
     private String memberId;
     private String status;
 

@@ -49,8 +49,8 @@ public class TransactionServiceImpl implements TransactionService {
         if(transactionSearchRequest.getStatus() != null){
             spec = spec.and(TransactionSpecification.statusEqual(transactionSearchRequest.getStatus()));
         }
-        if(transactionSearchRequest.getKeyword() != null){
-            spec = spec.and(TransactionSpecification.globalSearch(transactionSearchRequest.getKeyword()));
+        if(transactionSearchRequest.getName() != null){
+            spec = spec.and(TransactionSpecification.nameLike(transactionSearchRequest.getName()));
         }
         if(transactionSearchRequest.getMemberId() != null){
             spec = spec.and(TransactionSpecification.memberIdLike(transactionSearchRequest.getMemberId()));

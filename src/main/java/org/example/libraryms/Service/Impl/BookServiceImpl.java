@@ -37,24 +37,21 @@ public class BookServiceImpl implements BookService {
     public Page<BookSearchResponse> search(BookSearchRequest bookSearchRequest,  Pageable pageable) {
         if(bookSearchRequest.getCategoryId() != null){
             Category category = categoryRepository.findById(bookSearchRequest.getCategoryId())
-                    .orElseThrow(() -> new BussinessException("category not found"));
+                    .orElseThrow(() -> new BussinessException("Không tìm thấy Thể loại sách"));
         }
 
         Specification<Book> spec = (root, query, builder) -> builder.conjunction();
-        if (bookSearchRequest.getCategoryId() != null) {
-            spec = spec.and(BookSpecification.categoryEqual(bookSearchRequest.getCategoryId()));
-        }
-        if (bookSearchRequest.getKeyword() != null) {
-            spec = spec.and(BookSpecification.globalSearch(bookSearchRequest.getKeyword()));
-        }
-        if (bookSearchRequest.getId() != null) {
-            spec = spec.and(BookSpecification.idEqual(bookSearchRequest.getId()));
+        if (bookSearchRequest.getIsbn() != null) {
+            spec = spec.and(BookSpecification.isbnEqual(bookSearchRequest.getIsbn()));
         }
         if (bookSearchRequest.getTitle() != null && !bookSearchRequest.getTitle().isBlank()) {
             spec = spec.and(BookSpecification.titleContains(bookSearchRequest.getTitle()));
         }
         if (bookSearchRequest.getAuthor() != null && !bookSearchRequest.getAuthor().isBlank()) {
             spec = spec.and(BookSpecification.authorContains(bookSearchRequest.getAuthor()));
+        }
+        if (bookSearchRequest.getCategoryId() != null) {
+            spec = spec.and(BookSpecification.categoryEqual(bookSearchRequest.getCategoryId()));
         }
         if (bookSearchRequest.getPublisher() != null && !bookSearchRequest.getPublisher().isBlank()) {
             spec = spec.and(BookSpecification.publisherContains(bookSearchRequest.getPublisher()));
@@ -95,7 +92,11 @@ public class BookServiceImpl implements BookService {
             throw new BussinessException("cannot reduce total quantity below borrowed quantity");
         }
 
+        Category category = categoryRepository.findById(bookUpdateRequest.getCategoryId())
+                .orElseThrow(() -> new BussinessException("category not found"));
+
         bookMapper.fromUpdate(bookUpdateRequest, existedBook);
+        existedBook.setCategory(category);
         existedBook.setAvailableQuantity(bookUpdateRequest.getQuantity() - borrowed_quantity);
 
         bookRepository.save(existedBook);
