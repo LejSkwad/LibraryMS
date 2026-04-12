@@ -36,23 +36,27 @@ public class SecurityConfig {
                         .requestMatchers("/v1/auth/**").permitAll()
 
                         //GET requires authen with any ROLE
-                        .requestMatchers(HttpMethod.POST, "/v1/books").hasAnyRole("ADMIN", "LIBRARIAN")
-                        .requestMatchers(HttpMethod.PUT, "/v1/books").hasAnyRole("ADMIN", "LIBRARIAN")
+                        .requestMatchers(HttpMethod.GET,"/v1/books").authenticated()
+                        .requestMatchers("/v1/books/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
-                        //GET + DELETE requires authen with any ROLE
-                        .requestMatchers(HttpMethod.POST,"/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
-                        .requestMatchers(HttpMethod.PUT,"/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
+                        //GET requires authen with any ROLE
+                        .requestMatchers(HttpMethod.GET,"/v1/category").authenticated()
+                        .requestMatchers("/v1/category/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
                         /*
                          * GET profile + ChangePassword + UPDATE requires authen with any ROLE
-                         *  GET users + CREATE + DELETE hasAnyRole(ADMIN, LIBRARIAN)
+                         * GET users + CREATE + DELETE hasAnyRole(ADMIN, LIBRARIAN)
                          */
                         .requestMatchers("/v1/users/profile/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/v1/users/**").authenticated()
                         .requestMatchers("/v1/users/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
-                        /* TRANSACTION CONFIG */
-
+                        /* GET(transaction + items) requires authen with any ROLE,
+                           but BORROWER can only GETs their transaction
+                         * CREATE + PUT(returnBook + update) + DELETE hasAnyRole(ADMIN, LIBRARIAN)
+                         */
+                        .requestMatchers(HttpMethod.GET,"/v1/transactions/**").authenticated()
+                        .requestMatchers("/v1/transactions/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
                         /* BORROW-REQUEST CONFIG */
 

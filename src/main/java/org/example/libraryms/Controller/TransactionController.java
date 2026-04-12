@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,7 +54,6 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Cập nhật giao dịch thành công"));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/v1/transactions/{id}")
     public ResponseEntity<BaseResponse<Void>> delete(@PathVariable Integer id){
         transactionService.delete(id);

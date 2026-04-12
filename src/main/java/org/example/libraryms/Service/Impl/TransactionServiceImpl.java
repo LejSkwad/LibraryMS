@@ -18,6 +18,7 @@ import org.example.libraryms.Specification.TransactionSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Page<TransactionSearchResponse> search(TransactionSearchRequest transactionSearchRequest, Pageable pageable) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(auth.getName());
+        boolean isBorrower = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_BORROWER"));
+
+        if(isBorrower){
+            transactionSearchRequest.setMemberId(user.getMemberId());
+        }
+
         Specification<Transaction> spec = (root, query, builder) -> builder.conjunction();
         if(transactionSearchRequest.getStatus() != null){
             spec = spec.and(TransactionSpecification.statusEqual(transactionSearchRequest.getStatus()));
@@ -73,8 +82,17 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionItemsResponse> getItems(Integer id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(auth.getName());
+        boolean isBorrower = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_BORROWER"));
+
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new BussinessException("Không tìm thấy lịch sử giao dịch"));
+
+        if(isBorrower && !transaction.getUser().getId().equals(user.getId())){
+            throw new BussinessException("Không thể tìm chi tiết giao dịch");
+        }
+
         List<TransactionItem> transactionItems = transaction.getItems();
         List<TransactionItemsResponse> responseItems = transactionItems.stream()
                 .map(transactionMapper::toItemResponse)
