@@ -49,9 +49,9 @@ public class BorrowRequestController {
     }
 
     @PostMapping("/v1/borrow-requests")
-    public ResponseEntity<BaseResponse<Void>> create(@Valid @RequestBody BRCreateRequest request) {
-        //borrowRequestService.create(request);
-        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Gửi yêu cầu mượn thành công"));
+    public ResponseEntity<BaseResponse<Void>> create(@Valid @RequestBody BRCreateRequest brCreateRequest) {
+        borrowRequestService.create(brCreateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse<>(null, "Gửi yêu cầu mượn sách thành công"));
     }
 
     @PutMapping("/v1/borrow-requests/{id}/approve")

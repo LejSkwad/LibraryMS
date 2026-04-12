@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/events").permitAll()
 
                         //GET requires authen with any ROLE
                         .requestMatchers(HttpMethod.GET,"/v1/books").authenticated()

@@ -1,6 +1,7 @@
 package org.example.libraryms.DTO.BorrowRequest.Request;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BRCreateRequest {
+    @NotNull
+    private Integer userId;
+
     @NotEmpty
     private List<Integer> bookIds;
 }

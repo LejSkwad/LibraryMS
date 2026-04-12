@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,11 +30,11 @@ public class BorrowRequest {
     private BorrowRequestStatus status;
 
     @Column(name = "request_date")
-    private LocalDate requestDate;
+    private LocalDateTime requestDate;
 
     @PrePersist
     public void prePersist() {
-        this.requestDate = LocalDate.now();
+        this.requestDate = LocalDateTime.now();
         if(this.status == null) this.status = BorrowRequestStatus.PENDING;
     }
 }

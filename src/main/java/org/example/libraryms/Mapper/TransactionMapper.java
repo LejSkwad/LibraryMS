@@ -13,7 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface TransactionMapper {
 
-    @Mapping(target = "userName", expression = "java(transaction.getUser().getFirstName() + \" \" + transaction.getUser().getLastName())")
+    @Mapping(target = "fullName", expression = "java(transaction.getUser().getFirstName() + \" \" + transaction.getUser().getLastName())")
     @Mapping(source = "user.memberId", target = "memberId")
     TransactionSearchResponse toSearchResponse(Transaction transaction);
 

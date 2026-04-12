@@ -49,6 +49,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
 
+    @OneToMany(mappedBy = "user")
+    private List<BorrowRequest> borrowRequests;
+
     @PrePersist
     public void prePersist() {
         if (registrationDate == null) {

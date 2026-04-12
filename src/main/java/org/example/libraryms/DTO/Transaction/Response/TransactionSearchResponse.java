@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class TransactionSearchResponse {
     private Integer id;
-    private String userName;
+    private String fullName;
     private String memberId;
 
     @JsonFormat(pattern = "dd/MM/yyyy")

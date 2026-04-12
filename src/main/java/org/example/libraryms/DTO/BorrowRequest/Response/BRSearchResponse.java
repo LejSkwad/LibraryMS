@@ -5,27 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BRSearchResponse {
     private Integer id;
-    private String userName;
+    private String fullName;
     private String memberId;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate requestDate;
-    private String status;
-    private List<BookInfo> books;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime requestDate;
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class BookInfo {
-        private Integer id;
-        private String title;
-    }
+    private String status;
 }

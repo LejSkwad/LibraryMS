@@ -113,14 +113,8 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         List<Book> bookList = bookRepository.findByIdIn(transactionCreateRequest.getBookIds());
-        Set<Integer> foundIds = bookList.stream().map(Book::getId).collect(Collectors.toSet());
-        List<Integer> missingIds = transactionCreateRequest.getBookIds()
-                .stream()
-                .filter(id -> !foundIds.contains(id))
-                .toList();
-
-        if (!missingIds.isEmpty()) {
-            throw new BussinessException("Không thể tìm thấy sách" + missingIds);
+        if(transactionCreateRequest.getBookIds().size() != bookList.size()){
+            throw new BussinessException("Một số sách không còn tồn tại");
         }
 
         List<String> outOfStock = bookList.stream()
@@ -129,12 +123,11 @@ public class TransactionServiceImpl implements TransactionService {
                 .toList();
 
         if (!outOfStock.isEmpty()) {
-            throw new BussinessException("Hết sách: " + outOfStock);
+            throw new BussinessException("Một số sách đã hết số lượng");
         }
 
         Transaction transaction = transactionMapper.fromCreate(transactionCreateRequest);
         transaction.setUser(user);
-        transaction.setStatus(TransactionStatus.BORROWED);
 
         List<TransactionItem> transactionItems = bookList.stream()
                         .map(book -> {

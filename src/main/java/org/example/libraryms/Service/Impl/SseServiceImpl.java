@@ -16,7 +16,7 @@ public class SseServiceImpl implements SseService {
 
     @Override
     public SseEmitter subcribe(Integer userId) {
-        SseEmitter emitter = new SseEmitter(0L);
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         emitters.put(userId, emitter);
         emitter.onCompletion(() -> emitters.remove(userId));
         emitter.onTimeout(() -> emitters.remove(userId));
@@ -27,9 +27,7 @@ public class SseServiceImpl implements SseService {
     @Override
     public void sendToUser(Integer userId, String eventName, Object data) {
         SseEmitter emitter = emitters.get(userId);
-        if (emitter == null) {
-            return;
-        }
+        if (emitter == null) return;
         try {
             emitter.send(SseEmitter.event().name(eventName).data(data));
         } catch(IOException e){
@@ -47,6 +45,6 @@ public class SseServiceImpl implements SseService {
                 dead.add(id);
             }
         });
-        dead.forEach(id -> emitters.remove(id));
+        dead.forEach(emitters::remove);
     }
 }

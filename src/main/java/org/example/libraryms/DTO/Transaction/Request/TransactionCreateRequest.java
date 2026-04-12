@@ -22,9 +22,5 @@ public class TransactionCreateRequest {
 
     @NotNull
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDate borrowDate;
-
-    @NotNull
-    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dueDate;
 }

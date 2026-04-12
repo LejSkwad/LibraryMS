@@ -37,4 +37,10 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private TransactionStatus status;
+
+    @PrePersist
+    public void prePersist() {
+        this.borrowDate = LocalDate.now();
+        if(this.status == null) this.status = TransactionStatus.BORROWED;
+    }
 }

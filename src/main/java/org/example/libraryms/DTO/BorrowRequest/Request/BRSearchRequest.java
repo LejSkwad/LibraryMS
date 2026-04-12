@@ -11,15 +11,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BRSearchRequest {
-    private Integer userId;
-    private String lastName;
-
-    private String firstName;
-
+    private String name;
     private String memberId;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate requestDate;
+    private LocalDate requestDateFrom;
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private LocalDate requestDateTo;
 
     private String status;
 }
