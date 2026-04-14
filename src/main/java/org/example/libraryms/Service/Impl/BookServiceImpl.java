@@ -35,11 +35,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<BookSearchResponse> search(BookSearchRequest bookSearchRequest,  Pageable pageable) {
-        if(bookSearchRequest.getCategoryId() != null){
-            Category category = categoryRepository.findById(bookSearchRequest.getCategoryId())
-                    .orElseThrow(() -> new BussinessException("Không tìm thấy Thể loại sách"));
-        }
-
         Specification<Book> spec = (root, query, builder) -> builder.conjunction();
         if (bookSearchRequest.getIsbn() != null) {
             spec = spec.and(BookSpecification.isbnEqual(bookSearchRequest.getIsbn()));

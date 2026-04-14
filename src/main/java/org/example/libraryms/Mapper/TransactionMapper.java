@@ -17,11 +17,11 @@ public interface TransactionMapper {
     @Mapping(source = "user.memberId", target = "memberId")
     TransactionSearchResponse toSearchResponse(Transaction transaction);
 
-    @Mapping(target = "bookId",       source = "book.id")
     @Mapping(target = "bookTitle",    source = "book.title")
     @Mapping(target = "author",       source = "book.author")
     @Mapping(target = "publisher",    source = "book.publisher")
     @Mapping(target = "publishedYear", source = "book.publishedYear")
+    @Mapping(target = "coverImage",   source = "book.coverImage")
     TransactionItemsResponse toItemResponse(TransactionItem transactionItem);
 
     void fromUpdate(TransactionUpdateRequest transactionUpdateRequest, @MappingTarget Transaction transaction);

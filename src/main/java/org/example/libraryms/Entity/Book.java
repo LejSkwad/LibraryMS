@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Entity
 @Data
@@ -33,7 +32,7 @@ public class Book {
     @Column(name = "published_year")
     private Integer publishedYear;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category")
     private Category category;
 
@@ -52,6 +51,4 @@ public class Book {
     @Column(name = "page_count")
     private Integer pageCount;
 
-    @OneToMany(mappedBy = "book")
-    private List<TransactionItem> transactionItems;
 }

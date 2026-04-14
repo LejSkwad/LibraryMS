@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,7 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userRepository.findByEmail(auth.getName());
         boolean isBorrower = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_BORROWER"));
 
-        Transaction transaction = transactionRepository.findById(id)
+        Transaction transaction = transactionRepository.findWithItemsAndBooks(id)
                 .orElseThrow(() -> new BussinessException("Không tìm thấy lịch sử giao dịch"));
 
         if(isBorrower && !transaction.getUser().getId().equals(user.getId())){
@@ -107,8 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userRepository.findById(transactionCreateRequest.getUserId())
                 .orElseThrow(() -> new BussinessException("Không tìm thấy tài khoản người dùng"));
 
-        if(user.getTransactions().stream().anyMatch(
-                t -> t.getStatus().equals(TransactionStatus.BORROWED))){
+        if(transactionRepository.countByUser_IdAndStatus(user.getId(), TransactionStatus.BORROWED) > 0){
             throw new BussinessException("Tài khoản vẫn còn sách chưa trả");
         }
 
@@ -148,7 +146,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void bookReturn(Integer id) {
-        Transaction transaction = transactionRepository.findById(id)
+        Transaction transaction = transactionRepository.findWithItemsAndBooks(id)
                 .orElseThrow(() -> new BussinessException("Không tìm thấy giao dịch"));
 
         transaction.setReturnDate(LocalDate.now());

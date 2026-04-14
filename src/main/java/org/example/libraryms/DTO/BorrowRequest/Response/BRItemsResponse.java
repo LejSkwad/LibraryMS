@@ -1,4 +1,4 @@
-package org.example.libraryms.DTO.Transaction.Response;
+package org.example.libraryms.DTO.BorrowRequest.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionItemsResponse {
+public class BRItemsResponse {
     private String bookTitle;
     private String author;
     private String publisher;

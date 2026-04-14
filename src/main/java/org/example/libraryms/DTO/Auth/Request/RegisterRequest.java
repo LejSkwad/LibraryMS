@@ -22,8 +22,4 @@ public class RegisterRequest {
 
     @NotBlank
     private String lastName;
-
-    private String phone;
-
-    private String address;
 }
