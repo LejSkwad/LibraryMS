@@ -52,16 +52,21 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/v1/users/**").authenticated()
                         .requestMatchers("/v1/users/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
-                        /* GET(transaction + items) requires authen with any ROLE,
-                           but BORROWER can only GETs their transaction
+                        /* GET(transaction + items) requires authen with any ROLE
                          * CREATE + PUT(returnBook + update) + DELETE hasAnyRole(ADMIN, LIBRARIAN)
                          */
                         .requestMatchers(HttpMethod.GET,"/v1/transactions/**").authenticated()
                         .requestMatchers("/v1/transactions/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
-                        /* BORROW-REQUEST CONFIG */
-
-
+                        /* GET(search + items) requires authen with any ROLE
+                         * POST(create) BORROWER only
+                         * PUT(approve/taken/reject) ADMIN, LIBRARIAN only
+                         * DELETE(cancel) BORROWER only
+                         */
+                        .requestMatchers(HttpMethod.GET, "/v1/borrow-requests/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/v1/borrow-requests").hasRole("BORROWER")
+                        .requestMatchers(HttpMethod.DELETE, "/v1/borrow-requests/**").hasRole("BORROWER")
+                        .requestMatchers(HttpMethod.PUT, "/v1/borrow-requests/**").hasAnyRole("ADMIN", "LIBRARIAN")
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

@@ -77,14 +77,14 @@ public class BorrowRequestController {
     }
 
     @PutMapping("/v1/borrow-requests/{id}/reject")
-    public ResponseEntity<BaseResponse<Void>> reject(@PathVariable Integer id) {
-        //borrowRequestService.reject(id);
+    public ResponseEntity<BaseResponse<Void>> reject(@PathVariable Integer id, @RequestParam String rejectionReason) {
+        borrowRequestService.reject(id, rejectionReason);
         return ResponseEntity.ok(new BaseResponse<>(null, "Từ chối yêu cầu thành công"));
     }
 
     @DeleteMapping("/v1/borrow-requests/{id}")
     public ResponseEntity<BaseResponse<Void>> cancel(@PathVariable Integer id) {
-        //borrowRequestService.cancel(id);
+        borrowRequestService.cancel(id);
         return ResponseEntity.ok(new BaseResponse<>(null, "Hủy yêu cầu thành công"));
     }
 }

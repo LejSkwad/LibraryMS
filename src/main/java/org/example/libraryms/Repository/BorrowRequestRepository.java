@@ -23,4 +23,7 @@ public interface BorrowRequestRepository extends JpaRepository<BorrowRequest, In
     Optional<BorrowRequest> findWithItemsAndBooks(@Param("id") Integer id);
 
     boolean existsByUser_IdAndStatusIn(Integer userId, List<BorrowRequestStatus> statuses);
+
+    @Query("SELECT br FROM BorrowRequest br JOIN FETCH br.user WHERE br.id = :id")
+    Optional<BorrowRequest> findWithUser(Integer id);
 }

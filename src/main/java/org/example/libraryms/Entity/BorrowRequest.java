@@ -32,6 +32,9 @@ public class BorrowRequest {
     @Column(name = "request_date")
     private LocalDateTime requestDate;
 
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
+
     @PrePersist
     public void prePersist() {
         this.requestDate = LocalDateTime.now();

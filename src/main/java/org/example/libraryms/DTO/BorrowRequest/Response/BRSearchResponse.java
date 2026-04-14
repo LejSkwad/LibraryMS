@@ -19,4 +19,6 @@ public class BRSearchResponse {
     private LocalDateTime requestDate;
 
     private String status;
+
+    private String rejectionReason;
 }

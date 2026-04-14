@@ -151,14 +151,14 @@ public class BorrowRequestServiceImpl implements BorrowRequestService {
     @Override
     @Transactional
     public void approve(Integer id) {
-        BorrowRequest borrowRequest = borrowRequestRepository.findById(id)
+        BorrowRequest borrowRequest = borrowRequestRepository.findWithUser(id)
                 .orElseThrow(() -> new BussinessException("Không tìm thấy Yêu cầu mượn"));
         if(!borrowRequest.getStatus().equals(BorrowRequestStatus.PENDING)){
             throw new BussinessException("Không thể thực hiện");
         }
         borrowRequest.setStatus(BorrowRequestStatus.APPROVED);
         borrowRequestRepository.save(borrowRequest);
-        sseService.broadcast("request_approved", Map.of("requestId", borrowRequest.getId()));
+        sseService.sendToUser(borrowRequest.getUser().getId(), "request_approved", Map.of("requestId", id));
 
     }
 
@@ -197,5 +197,38 @@ public class BorrowRequestServiceImpl implements BorrowRequestService {
         borrowRequestRepository.save(borrowRequest);
 
         sseService.sendToUser(borrowRequest.getUser().getId(), "request_taken", Map.of("requestId", id));
+    }
+
+    @Override
+    @Transactional
+    public void reject(Integer id, String rejectionReason) {
+        BorrowRequest borrowRequest = borrowRequestRepository.findWithUser(id)
+                .orElseThrow(() -> new BussinessException("Không tìm thấy Yêu cầu"));
+        if(!borrowRequest.getStatus().equals(BorrowRequestStatus.PENDING)){
+            throw new BussinessException("Không thể thực hiện");
+        }
+
+        borrowRequest.setStatus(BorrowRequestStatus.REJECTED);
+        borrowRequest.setRejectionReason(rejectionReason);
+        borrowRequestRepository.save(borrowRequest);
+        sseService.sendToUser(borrowRequest.getUser().getId(), "request_rejected", Map.of("requestId", id));
+    }
+
+    @Override
+    @Transactional
+    public void cancel(Integer id) {
+        BorrowRequest borrowRequest = borrowRequestRepository.findWithUser(id)
+                .orElseThrow(() -> new BussinessException("Không tìm thấy Yêu cầu"));
+        if(!borrowRequest.getStatus().equals(BorrowRequestStatus.PENDING )){
+            throw new BussinessException("Không thể thực hiện");
+        }
+
+        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+        if(!borrowRequest.getUser().getEmail().equals(auth.getName())){
+            throw new BussinessException("Không thể thực hiện");
+        }
+
+        borrowRequestRepository.delete(borrowRequest);
+        sseService.broadcast("request_cancelled", Map.of("requestId", id));
     }
 }

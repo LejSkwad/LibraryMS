@@ -16,4 +16,6 @@ public interface BorrowRequestService {
     void create(BRCreateRequest brCreateRequest);
     void approve(Integer id);
     void taken(Integer id, LocalDate dueDate);
+    void reject(Integer id, String rejectionReason);
+    void cancel(Integer id);
 }
