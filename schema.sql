@@ -135,11 +135,11 @@ INSERT INTO category (name) VALUES
 -- ------------------------------------------------------------
 -- id=3 (LIB-00003) = walk-in account (no email/password yet)
 INSERT INTO users (member_id, email, password, first_name, last_name, role, phone, address, registration_date) VALUES
-    ('LIB-00001', 'admin@library.vn',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Admin',    'Hệ thống',  'ADMIN',     '0900000001', '1 Nguyễn Huệ, Q.1, TP.HCM',         '2024-01-01'),
-    ('LIB-00002', 'minh@library.vn',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Minh',     'Thư viện',  'LIBRARIAN', '0900000002', '5 Lê Lợi, Q.1, TP.HCM',             '2024-01-10'),
+    ('LIB-00001', 'admin@library.vn',   '$2a$12$/rGm/9GOb0Im4cf5UoqHYOKu15tVEBxm7XFxR3YJtyBK5YIawXFza', 'Admin',    'Hệ thống',  'ADMIN',     '0900000001', '1 Nguyễn Huệ, Q.1, TP.HCM',         '2024-01-01'),
+    ('LIB-00002', 'minh@library.vn',    '$2a$12$/rGm/9GOb0Im4cf5UoqHYOKu15tVEBxm7XFxR3YJtyBK5YIawXFza', 'Minh',     'Thư viện',  'LIBRARIAN', '0900000002', '5 Lê Lợi, Q.1, TP.HCM',             '2024-01-10'),
     ('LIB-00003', NULL,                 NULL,                                                              'Nguyễn',   'Văn An',    'BORROWER',  '0912345678', '12 Trần Hưng Đạo, Q.5, TP.HCM',     '2024-02-01'),
-    ('LIB-00004', 'thibinh@gmail.com',  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Trần',     'Thị Bình',  'BORROWER',  '0923456789', '34 Đinh Tiên Hoàng, Bình Thạnh',    '2024-02-15'),
-    ('LIB-00005', 'hoangnam@gmail.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Lê',       'Hoàng Nam', 'BORROWER',  '0934567890', '78 Cách Mạng Tháng 8, Q.3, TP.HCM', '2024-03-01');
+    ('LIB-00004', 'thibinh@gmail.com',  '$2a$12$/rGm/9GOb0Im4cf5UoqHYOKu15tVEBxm7XFxR3YJtyBK5YIawXFza', 'Trần',     'Thị Bình',  'BORROWER',  '0923456789', '34 Đinh Tiên Hoàng, Bình Thạnh',    '2024-02-15'),
+    ('LIB-00005', 'hoangnam@gmail.com', '$2a$12$/rGm/9GOb0Im4cf5UoqHYOKu15tVEBxm7XFxR3YJtyBK5YIawXFza', 'Lê',       'Hoàng Nam', 'BORROWER',  '0934567890', '78 Cách Mạng Tháng 8, Q.3, TP.HCM', '2024-03-01');
 
 -- ------------------------------------------------------------
 -- books
