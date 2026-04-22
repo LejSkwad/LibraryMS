@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/LibraryMS
-    username: root
-    password: facebook.com
+    url: ${DB_URL:jdbc:mysql://localhost:3306/LibraryMS}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:facebook.com}
   jpa:
-    show-sql: true
+    show-sql: false
     open-in-view: false
     hibernate:
       ddl-auto: update
 jwt:
-  secret: myverylongsecretkeythatisatleast32chars
+  secret: ${JWT_SECRET:myverylongsecretkeythatisatleast32chars}
   expiration: 86400000
