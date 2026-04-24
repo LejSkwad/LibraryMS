@@ -8,6 +8,8 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
 jwt:
   secret: ${JWT_SECRET:myverylongsecretkeythatisatleast32chars}
   expiration: 86400000
