@@ -5,16 +5,14 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: LibraryMS
-    ports:
-      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "mysql -u root -p$$MYSQL_ROOT_PASSWORD LibraryMS -e 'SELECT 1' 2>/dev/null || exit 1"]
       interval: 10s
-      retries: 5
-      start_period: 30s
+      retries: 10
+      start_period: 40s
   app:
     build: .
     ports:
@@ -24,18 +22,19 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+    restart: on-failure
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/v3/api-docs || exit 1"]
+      test: ["CMD-SHELL", "curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/v1/books | grep -q '401'"]
       interval: 15s
       retries: 5
       start_period: 60s
 
   frontend:
     build:
-      context: ../library-react
+      context: ../LibraryMS-React
       args:
         VITE_API_URL: ${VITE_API_URL}
     ports:
