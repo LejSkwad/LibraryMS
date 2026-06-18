@@ -13,7 +13,6 @@ Frontend Repo: https://github.com/LejSkwad/LibraryMS-React
 | Backend | Java 21, Spring Boot 4, Spring Security (JWT), JPA/Hibernate |
 | Frontend | React 18, Vite, React Router |
 | Database | MySQL 8.0 |
-| Search | Elasticsearch 8.13 |
 | Auth | JWT (stateless) |
 | Containerization | Docker, Docker Compose |
 
@@ -91,7 +90,6 @@ DB_URL=jdbc:mysql://db:3306/LibraryMS
 DB_USERNAME=root
 DB_PASSWORD=your_password
 JWT_SECRET=your_secret_key_min_32_characters
-ELASTICSEARCH_URL=http://elasticsearch:9200
 ```
 
 **3. Start everything**
@@ -104,7 +102,6 @@ docker compose up --build
 |---------|-----|
 | Frontend | http://localhost:3000 |
 | Backend API | http://localhost:8080 |
-| Elasticsearch | http://localhost:9200 |
 
 > First run takes a few minutes to download images and build. The database is created and seeded automatically.
 
@@ -122,7 +119,7 @@ docker compose down -v
 
 ### Option 2 — Run Locally (Without Docker)
 
-> Requires: Java 21, Maven, MySQL 8.0, Node.js, Elasticsearch 8.13
+> Requires: Java 21, Maven, MySQL 8.0, Node.js
 
 **Backend**
 
