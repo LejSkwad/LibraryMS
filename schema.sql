@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name        VARCHAR(100) NOT NULL,
     last_name         VARCHAR(100) NOT NULL,
     role              ENUM('ADMIN', 'LIBRARIAN', 'BORROWER') NOT NULL,
-    phone             VARCHAR(20)  NOT NULL,
+    phone             VARCHAR(20)  ,
     address           TEXT,
     registration_date DATE         NOT NULL,
     PRIMARY KEY (id),

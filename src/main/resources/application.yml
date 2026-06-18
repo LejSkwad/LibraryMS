@@ -6,7 +6,6 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD}
     hikari:
-      initialization-fail-timeout: -1
       connection-timeout: 30000
   jpa:
     show-sql: false
