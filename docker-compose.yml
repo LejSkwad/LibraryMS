@@ -9,10 +9,10 @@ services:
       - mysql_data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "mysql -u root -p$$MYSQL_ROOT_PASSWORD LibraryMS -e 'SELECT 1' 2>/dev/null || exit 1"]
       interval: 10s
-      retries: 5
-      start_period: 30s
+      retries: 10
+      start_period: 40s
   app:
     build: .
     ports:
@@ -22,6 +22,7 @@ services:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
+    restart: on-failure
     depends_on:
       db:
         condition: service_healthy
