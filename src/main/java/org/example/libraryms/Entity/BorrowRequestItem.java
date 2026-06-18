@@ -16,10 +16,10 @@ public class BorrowRequestItem {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "request_id")
+    @JoinColumn(name = "request_id", nullable = false)
     private BorrowRequest borrowRequest;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 }

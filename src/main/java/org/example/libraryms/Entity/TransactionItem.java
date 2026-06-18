@@ -17,10 +17,10 @@ public class TransactionItem {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "transaction_id")
+    @JoinColumn(name = "transaction_id", nullable = false)
     private Transaction transaction;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 }

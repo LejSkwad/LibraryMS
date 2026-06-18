@@ -96,10 +96,11 @@ CREATE TABLE IF NOT EXISTS transaction_items (
 -- borrow_requests
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS borrow_requests (
-    id           INT  NOT NULL AUTO_INCREMENT,
-    user_id      INT  NOT NULL,
-    request_date DATE NOT NULL,
-    status       ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    id               INT  NOT NULL AUTO_INCREMENT,
+    user_id          INT  NOT NULL,
+    request_date     DATE NOT NULL,
+    status           ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    rejection_reason TEXT,
     PRIMARY KEY (id),
     CONSTRAINT fk_borrow_request_user FOREIGN KEY (user_id) REFERENCES users (id)
 );

@@ -45,7 +45,7 @@ public class JwtUtil {
             extractClaims(token);
             return true;
         } catch (JwtException e) {
-            throw new BussinessException(e.getMessage());
+            throw new BussinessException("Token không hợp lệ hoặc đã hết hạn");
         }
     }
 }

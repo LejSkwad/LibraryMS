@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -19,25 +19,25 @@ public class BorrowRequest {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "borrowRequest", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BorrowRequestItem> borrowRequestItem;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private BorrowRequestStatus status;
 
-    @Column(name = "request_date")
-    private LocalDateTime requestDate;
+    @Column(name = "request_date", nullable = false)
+    private LocalDate requestDate;
 
     @Column(name = "rejection_reason")
     private String rejectionReason;
 
     @PrePersist
     public void prePersist() {
-        this.requestDate = LocalDateTime.now();
+        this.requestDate = LocalDate.now();
         if(this.status == null) this.status = BorrowRequestStatus.PENDING;
     }
 }

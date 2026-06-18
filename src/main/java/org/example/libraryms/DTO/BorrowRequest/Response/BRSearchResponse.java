@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -15,8 +15,8 @@ public class BRSearchResponse {
     private String fullName;
     private String memberId;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-    private LocalDateTime requestDate;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate requestDate;
 
     private String status;
 
